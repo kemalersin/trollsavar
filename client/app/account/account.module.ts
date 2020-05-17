@@ -9,7 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SignupComponent } from './signup/signup.component';
 
-const accountRoutes: Routes = [{
+const accountRoutes: Routes = [/*{
     path: 'login',
     component: LoginComponent,
 }, {
@@ -18,7 +18,7 @@ const accountRoutes: Routes = [{
 }, {
     path: 'signup',
     component: SignupComponent,
-}];
+}*/];
 
 @NgModule({
     imports: [

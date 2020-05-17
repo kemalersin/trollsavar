@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-interface Thing {
-    name: string;
-    info?: string;
-}
+import { AuthService } from '../../components/auth/auth.service';
 
 @Component({
     selector: 'main',
@@ -12,40 +9,20 @@ interface Thing {
     styles: [require('./main.scss')],
 })
 export class MainComponent implements OnInit {
+    isLoggedIn;
 
-    awesomeThings: Thing[] = [];
-    newThing = '';
+    static parameters = [AuthService];
 
-    static parameters = [HttpClient];
-    constructor(private http: HttpClient) {
-        this.http = http;
+    constructor(private authService: AuthService) {
+        this.isLoggedIn = !!authService.getToken();
 
+        this.authService.currentUserChanged.subscribe(user => {
+            this.authService.isLoggedIn().then(is => {
+                this.isLoggedIn = is;
+            });
+        });
     }
 
     ngOnInit() {
-        return this.http.get('/api/things')
-            .subscribe((things: Thing[]) => {
-                this.awesomeThings = things;
-            });
-    }
-
-
-    addThing() {
-        if(this.newThing) {
-            let text = this.newThing;
-            this.newThing = '';
-
-            return this.http.post('/api/things', { name: text })
-                .subscribe(thing => {
-                    console.log('Added Thing:', thing);
-                });
-        }
-    }
-
-    deleteThing(thing) {
-        return this.http.delete(`/api/things/${thing._id}`)
-            .subscribe(() => {
-                console.log('Deleted Thing');
-            });
     }
 }

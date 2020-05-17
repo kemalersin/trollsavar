@@ -10,8 +10,8 @@ import { AuthService } from '../auth/auth.service';
 export class NavbarComponent {
     isCollapsed = true;
     menu = [{
-        title: 'Home',
-        'link': '/home',
+        title: 'Ana Sayfa',
+        link: '/anasayfa',
     }];
     Router;
     isAdmin;
@@ -47,7 +47,7 @@ export class NavbarComponent {
 
     logout() {
         return this.AuthService.logout().then(() => {
-            this.Router.navigateByUrl('/home');
+            this.Router.navigateByUrl('/anasayfa');
             this.reset();
         });
     }}

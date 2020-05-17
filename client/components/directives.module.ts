@@ -10,7 +10,6 @@ import { AuthModule } from './auth/auth.module';
 
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
-import { OauthButtonsComponent } from './oauth-buttons/oauth-buttons.component';
 
 @NgModule({
     imports: [
@@ -22,13 +21,11 @@ import { OauthButtonsComponent } from './oauth-buttons/oauth-buttons.component';
     ],
     declarations: [
         NavbarComponent,
-        FooterComponent,
-        OauthButtonsComponent,
+        FooterComponent
     ],
     exports: [
         NavbarComponent,
-        FooterComponent,
-        OauthButtonsComponent,
+        FooterComponent
     ]
 })
 export class DirectivesModule {}

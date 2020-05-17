@@ -18,6 +18,7 @@ import { DirectivesModule } from '../components/directives.module';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AccountModule } from './account/account.module';
 import { AdminModule } from './admin/admin.module';
+import { MembersModule } from './members/members.module';
 
 export function tokenGetter() {
     return localStorage.getItem('id_token');
@@ -25,7 +26,7 @@ export function tokenGetter() {
 
 const appRoutes: Routes = [{
     path: '',
-    redirectTo: '/home',
+    redirectTo: '/anasayfa',
     pathMatch: 'full'
 }];
 
@@ -44,6 +45,7 @@ const appRoutes: Routes = [{
         DirectivesModule,
         AccountModule,
         AdminModule,
+        MembersModule
     ],
     declarations: [AppComponent],
     bootstrap: [AppComponent],

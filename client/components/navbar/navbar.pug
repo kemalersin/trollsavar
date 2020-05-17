@@ -11,17 +11,14 @@
       ul.nav.navbar-nav
         li(*ngFor='let item of menu', routerLinkActive='active')
           a(routerLink='{{item.link}}') {{item.title}}
-        li([hidden]='!isAdmin', routerLinkActive='active')
-          a(routerLink='/admin') Admin
+        li(*ngIf='isAdmin', routerLinkActive='active')
+          a(routerLink='/ekip') Ekip
+        li(*ngIf='isAdmin', routerLinkActive='active')
+          a(routerLink='/uyeler') Uyeler 
+        li(*ngIf='isAdmin', routerLinkActive='active')
+          a(routerLink='/engelliler') Engelliler                    
       ul.nav.navbar-nav.navbar-right
-        li([hidden]='isLoggedIn', routerLinkActive='active')
-          a(routerLink='/signup') Sign up
-        li([hidden]='isLoggedIn', routerLinkActive='active')
-          a(routerLink='/login') Login
-        li([hidden]='!isLoggedIn')
-          p.navbar-text Hello {{ currentUser.name }}
-        li([hidden]='!isLoggedIn', routerLinkActive='active')
-          a(routerLink='/settings')
-            span.glyphicon.glyphicon-cog
-        li([hidden]='!isLoggedIn')
-          a((click)='logout()', style='cursor: pointer;') Log out
+        li(*ngIf='isLoggedIn')
+          p.navbar-text Selam {{ currentUser.name }}
+        li(*ngIf='isLoggedIn')
+          a((click)='logout()', style='cursor: pointer;') Cikis
