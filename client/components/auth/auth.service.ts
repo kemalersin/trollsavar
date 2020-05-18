@@ -133,7 +133,7 @@ export class AuthService {
 
     isMember(callback?) {
         return this.getCurrentUser().then(user => {
-            var is = (user.role !== 'user');
+            var is = (user.role || 'user' !== 'user');
             safeCb(callback)(is);
             return is;
         });

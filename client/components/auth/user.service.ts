@@ -24,18 +24,22 @@ export class UserService {
         return this.http.get('/api/users/count') as Observable<number>;
     }    
 
-    query(username: string = ''): Observable<UserType[]> {
-        return this.http.get(`/api/users/${username ? username : ""}`) as Observable<UserType[]>;
+    query(username, index = 1): Observable<UserType[]> {
+        return this.http.get(`/api/users/${username ? username : ""}?index=${index}`) as Observable<UserType[]>;
     }
-    get(username: string = ''): Observable<UserType[]> {
+
+    get(username = ''): Observable<UserType[]> {
         return this.http.get(`/api/users/${username ? username : "me"}`) as Observable<UserType[]>;
     }
+
     create(user: UserType) {
         return this.http.post('/api/users/', user);
     }
+
     changePassword(user, oldPassword, newPassword) {
         return this.http.put(`/api/users/${user.id || user._id}/password`, { oldPassword, newPassword });
     }
+
     remove(user) {
         return this.http.delete(`/api/users/${user.id || user._id}`)
             .pipe(map(() => user));

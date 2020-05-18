@@ -14,6 +14,7 @@ export class BlockComponent implements OnInit {
     blocks: Object[];
     newBlock = '';
 
+    index = 1;
     count = -1;
 
     static parameters = [Location, ActivatedRoute, Router, BlockService];
@@ -30,12 +31,18 @@ export class BlockComponent implements OnInit {
         this.route.paramMap.subscribe((params) => {
             this.username = params.get('username');
 
-            this.username ? this.count = 1 :
-                this.blockService.count().subscribe((count) => this.count = count);
-
             this.blockService.query(this.username).subscribe((blocks) => {
                 this.blocks = blocks;
+
+                this.username ? this.count = blocks.length :
+                    this.blockService.count().subscribe((count) => this.count = count);
             });
+        });
+    }
+
+    onScroll() {
+        this.blockService.query(this.username, ++this.index).subscribe((blocks) => {
+            this.blocks = [...this.blocks, ...blocks];
         });
     }
 

@@ -12,8 +12,10 @@ import { UserService } from '../../components/auth/user.service';
 export class UsersComponent implements OnInit {
     users: Object[];
     username = '';
+    prmUsername = '';
 
     count = -1;
+    index = 1;
 
     static parameters = [Location, ActivatedRoute, Router, UserService];
 
@@ -27,14 +29,20 @@ export class UsersComponent implements OnInit {
 
     ngOnInit() {
         this.route.paramMap.subscribe(params => {
-            let username = params.get('username');
+            this.prmUsername = params.get('username');
 
-            username ? this.count = 1 :
-                this.userService.count().subscribe((count) => this.count = count);
-
-            this.userService.query(username).subscribe(users => {
+            this.userService.query(this.prmUsername).subscribe(users => {
                 this.users = Array.isArray(users) ? users : [users];
+
+                this.prmUsername ? this.count = this.users.length :
+                    this.userService.count().subscribe((count) => this.count = count);
             });
+        });
+    }
+
+    onScroll() {
+        this.userService.query(this.prmUsername, ++this.index).subscribe((users) => {
+            this.users = [...this.users, ...users];
         });
     }
 
@@ -47,7 +55,7 @@ export class UsersComponent implements OnInit {
             .subscribe((users) => this.router.navigate([
                 '/uyeler',
                 users.length === 1 ?
-                users[0].username : this.username
-        ]));
+                    users[0].username : this.username
+            ]));
     }
 }

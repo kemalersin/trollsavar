@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+
 import { AuthGuard } from '../../components/auth/auth-guard.service';
 import { BlockService } from './block.service';
 import { BlockComponent } from './block.component';
@@ -22,7 +25,7 @@ const BlockRoutes: Routes = [{
         BrowserModule,
         FormsModule,
         RouterModule.forChild(BlockRoutes),
-
+        InfiniteScrollModule
     ],
     declarations: [
         BlockComponent

@@ -19,7 +19,13 @@ export function count(req, res, next) {
 }
 
 export function index(req, res) {
-    return Block.find({}, '-salt -password').sort({ _id: -1 }).exec()
+    var index = +req.query.index || 1;
+
+    return Block.find({}, '-salt -password')
+        .sort({ _id: -1 })
+        .skip(--index * config.dataLimit)
+        .limit(config.dataLimit)
+        .exec()
         .then((blocks) => {
             res.status(200).json(blocks);
         })
@@ -27,7 +33,7 @@ export function index(req, res) {
 }
 
 export function create(req, res) {
-    let username = req.body.username;
+    var username = req.body.username;
 
     var twitter = new Twitter({
         consumer_key: config.twitter.clientID,
@@ -66,8 +72,12 @@ export function create(req, res) {
 
 export function show(req, res, next) {
     var username = req.params.username;
+    var index = +req.query.index || 1;
 
-    return Block.find({ username: { $regex: new RegExp(username, 'i') } }).exec()
+    return Block.find({ username: { $regex: new RegExp(username, 'i') } })
+        .skip(--index * config.dataLimit)
+        .limit(config.dataLimit)
+        .exec()
         .then(block => {
             if (!block) {
                 return res.status(404).end();

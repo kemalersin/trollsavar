@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+
 import { AuthGuard } from '../../components/auth/auth-guard.service';
 import { AuthModule } from '../../components/auth/auth.module';
 import { UsersComponent } from './users.component';
@@ -23,7 +26,7 @@ const usersRoutes: Routes = [{
         BrowserModule,
         FormsModule,
         RouterModule.forChild(usersRoutes),
-
+        InfiniteScrollModule
     ],
     declarations: [
         UsersComponent,

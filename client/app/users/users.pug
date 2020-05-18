@@ -18,7 +18,11 @@
         span(*ngIf='count===0') Kayit bulunamadi!
         span(*ngIf='count>0') Toplam {{count}} kayitli uye bulundu:
       br      
-  .row
+  .row(infiniteScroll,
+      [infiniteScrollDistance]='0.1',
+      [infiniteScrollThrottle]='50',
+      (scrolled)='onScroll()'
+    )
     .col-md-3(*ngFor='let user of users')
       .panel.panel-default
         .panel-body

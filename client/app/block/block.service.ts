@@ -20,8 +20,8 @@ export class BlockService {
         return this.http.get('/api/blocks/count') as Observable<number>;
     }
 
-    query(username): Observable<BlockType[]> {
-        return this.http.get(`/api/blocks/${username ? username : ""}`) as Observable<BlockType[]>;
+    query(username, index = 1): Observable<BlockType[]> {
+        return this.http.get(`/api/blocks/${username ? username : ""}?index=${index}`) as Observable<BlockType[]>;
     }
 
     create(block: BlockType) {

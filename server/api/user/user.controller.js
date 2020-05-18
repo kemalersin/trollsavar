@@ -26,7 +26,13 @@ export function count(req, res, next) {
 }
 
 export function index(req, res) {
-    return User.find({}, '-accessToken -accessTokenSecret').sort({ _id: -1 }).exec()
+    var index = +req.query.index || 1;
+
+    return User.find({}, '-accessToken -accessTokenSecret')
+        .sort({ _id: -1 })
+        .skip(--index * config.dataLimit)
+        .limit(config.dataLimit)        
+        .exec()
         .then(users => {
             res.status(200).json(users);
         })
@@ -35,8 +41,12 @@ export function index(req, res) {
 
 export function show(req, res, next) {
     var username = req.params.username;
+    var index = +req.query.index || 1;
 
-    return User.find({ username: { $regex: new RegExp(username, 'i') } }).exec()
+    return User.find({ username: { $regex: new RegExp(username, 'i') } })
+        .skip(--index * config.dataLimit)
+        .limit(config.dataLimit)    
+        .exec()
         .then(users => {
             if (!users[0]) {
                 return res.status(404).end();
