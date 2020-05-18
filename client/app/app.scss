@@ -5,6 +5,10 @@ $fa-font-path: '/assets/fonts/font-awesome/';
  * App-wide Styles
  */
 
+ body {
+   overflow-y: scroll;
+ }
+
 .browserupgrade {
   margin: 0.2em 0;
   background: #ccc;
@@ -16,14 +20,16 @@ $fa-font-path: '/assets/fonts/font-awesome/';
   display: none !important;
 }
 
-.container {
-  box-sizing: unset;
-}
-
 .ng-valid[required], .ng-valid.required  {
   border-left: 5px solid #42A948; /* green */
 }
 
 .ng-invalid:not(form)  {
   border-left: 5px solid #a94442; /* red */
+}
+
+.trash {
+	cursor: pointer;
+	text-decoration: none;
+	color:rgb(209, 91, 71);
 }

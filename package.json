@@ -38,7 +38,8 @@
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.3",
     "pug": "^2.0.0",
-    "serve-favicon": "^2.3.0"
+    "serve-favicon": "^2.3.0",
+    "twitter": "^1.7.1"
   },
   "devDependencies": {
     "@angularclass/hmr-loader": "^3.0.4",

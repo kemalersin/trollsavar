@@ -1,0 +1,31 @@
+.container
+  .row
+    .col-md-12
+      .form((keyup.enter)='addBlock()')
+        .input-group
+          input.form-control(type='text',
+            [(ngModel)]='newBlock',
+            name='block',
+            placeholder='Engellenecek Twitter kullanicisinin adini yaziniz'
+          )
+          .input-group-btn
+            button.btn.btn-default(type='submit', (click)='addBlock()') Ekle
+      br
+  .row
+    .col-md-12
+      p.text-center
+        span(*ngIf='count===-1') Kayitlar listeleniyor...
+        span(*ngIf='count===0') Kayit bulunamadi!
+        span(*ngIf='count>0') Toplam {{count}} engellenmis hesap bulundu:
+      br
+  .row
+    .col-md-3(*ngFor='let block of blocks')
+      .panel.panel-default
+        .panel-body
+          p.text-center
+            img.profile-image.img-circle([src]='block.profile.profile_image_url_https', width='48', height='48')
+          h4.text-center
+            a([attr.href]='"https://www.twitter.com/" + block.username', target='_blank') {{block.username}}
+          p.text-center
+            a.trash((click)='delete(block)')
+              span.fa.fa-trash.fa-2x

@@ -1,39 +1,53 @@
 import passport from 'passport';
+
 import {
     Strategy as TwitterStrategy
 } from 'passport-twitter';
 
+import Member from '../../api/member/member.model';
+
 export function setup(User, config) {
     passport.use(new TwitterStrategy({
-            consumerKey: config.twitter.clientID,
-            consumerSecret: config.twitter.clientSecret,
-            callbackURL: config.twitter.callbackURL,
-            includeEmail: true
-        },
-        function (token, tokenSecret, profile, done) {
+        consumerKey: config.twitter.clientID,
+        consumerSecret: config.twitter.clientSecret,
+        callbackURL: config.twitter.callbackURL,
+        includeEmail: true
+    },
+        async function (token, tokenSecret, profile, done) {
             profile._json.id = `${profile._json.id}`;
             profile.id = `${profile.id}`;
 
-            User.findOne({
-                    'twitter.id': profile.id
-                }).exec()
-                .then(user => {
-                    let getRole = (username) => (
-                        username == config.twitter.masterUser ? 'admin' : 'user'
-                    );
+            let role;
 
+            if (profile.username == config.twitter.masterUser) {
+                role = 'admin';
+            }
+            else {
+                let member = await Member.findOne({ username: profile.username });
+                role = (member) ? 'member' : 'user';
+            }
+
+            User.findOne({
+                'profile.id': profile.id
+            }).exec()
+                .then(user => {
                     if (user) {
-                        user.role = getRole(user.username);
+                        if (user.role != role) {
+                            user.role = role;
+                            user.save();
+                        }
+
                         return done(null, user);
                     }
 
                     user = new User({
-                        provider: 'twitter',
                         name: profile.displayName,
                         username: profile.username,
-                        role: getRole(profile.username),
                         email: profile._json.email,
-                        twitter: profile._json
+                        profile: profile._json,
+                        accessToken: token,
+                        accessTokenSecret: tokenSecret,
+                        role
                     });
 
                     user.save()

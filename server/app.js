@@ -10,7 +10,6 @@ import http from 'http';
 
 import expressConfig from './config/express';
 import registerRoutes from './routes';
-import seedDatabaseIfNeeded from './config/seed';
 
 
 // Connect to MongoDB

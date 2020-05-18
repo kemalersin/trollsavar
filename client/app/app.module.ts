@@ -16,9 +16,9 @@ import { AppComponent } from './app.component';
 import { MainModule } from './main/main.module';
 import { DirectivesModule } from '../components/directives.module';
 import { JwtModule } from '@auth0/angular-jwt';
-import { AccountModule } from './account/account.module';
-import { AdminModule } from './admin/admin.module';
 import { MembersModule } from './members/members.module';
+import { UsersModule } from './users/users.module';
+import { BlockModule } from './block/block.module';
 
 export function tokenGetter() {
     return localStorage.getItem('id_token');
@@ -43,9 +43,9 @@ const appRoutes: Routes = [{
         RouterModule.forRoot(appRoutes, { enableTracing: process.env.NODE_ENV === 'development' }),
         MainModule,
         DirectivesModule,
-        AccountModule,
-        AdminModule,
-        MembersModule
+        MembersModule,
+        UsersModule,
+        BlockModule
     ],
     declarations: [AppComponent],
     bootstrap: [AppComponent],

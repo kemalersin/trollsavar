@@ -8,28 +8,33 @@ type UserType = {
     // TODO: use Mongoose model
     id?: string;
     _id?: string;
-    name?: string;
+    username?: string;
     email?: string;
 };
 
 @Injectable()
 export class UserService {
     static parameters = [HttpClient];
+
     constructor(private http: HttpClient) {
         this.http = http;
     }
 
-    query(): Observable<UserType[]> {
-        return this.http.get('/api/users/') as Observable<UserType[]>;
+    count(): Observable<number> {
+        return this.http.get('/api/users/count') as Observable<number>;
+    }    
+
+    query(username: string = ''): Observable<UserType[]> {
+        return this.http.get(`/api/users/${username ? username : ""}`) as Observable<UserType[]>;
     }
-    get(user: UserType = {id: 'me'}): Observable<UserType> {
-        return this.http.get(`/api/users/${user.id || user._id}`) as Observable<UserType>;
+    get(username: string = ''): Observable<UserType[]> {
+        return this.http.get(`/api/users/${username ? username : "me"}`) as Observable<UserType[]>;
     }
     create(user: UserType) {
         return this.http.post('/api/users/', user);
     }
     changePassword(user, oldPassword, newPassword) {
-        return this.http.put(`/api/users/${user.id || user._id}/password`, {oldPassword, newPassword});
+        return this.http.put(`/api/users/${user.id || user._id}/password`, { oldPassword, newPassword });
     }
     remove(user) {
         return this.http.delete(`/api/users/${user.id || user._id}`)

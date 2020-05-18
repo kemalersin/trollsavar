@@ -3,17 +3,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../components/auth/auth-guard.service';
-import { MembersService } from './members.service';
-import { MembersComponent } from './members.component';
+import { BlockService } from './block.service';
+import { BlockComponent } from './block.component';
 
 
-const MembersRoutes: Routes = [{
-    path: 'ekip/:username',
-    component: MembersComponent,
+const BlockRoutes: Routes = [{
+    path: 'engelliler/:username',
+    component: BlockComponent,
     canActivate: [AuthGuard]
 }, {
-    path: 'ekip',
-    component: MembersComponent,
+    path: 'engelliler',
+    component: BlockComponent,
     canActivate: [AuthGuard]
 }];
 
@@ -21,17 +21,17 @@ const MembersRoutes: Routes = [{
     imports: [
         BrowserModule,
         FormsModule,
-        RouterModule.forChild(MembersRoutes),
+        RouterModule.forChild(BlockRoutes),
 
     ],
     declarations: [
-        MembersComponent
+        BlockComponent
     ],
     exports: [
-        MembersComponent
+        BlockComponent
     ],
     providers: [
-        MembersService
+        BlockService
     ]
 })
-export class MembersModule { }
+export class BlockModule { }

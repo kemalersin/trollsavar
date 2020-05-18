@@ -3,35 +3,33 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../components/auth/auth-guard.service';
-import { MembersService } from './members.service';
-import { MembersComponent } from './members.component';
+import { AuthModule } from '../../components/auth/auth.module';
+import { UsersComponent } from './users.component';
 
 
-const MembersRoutes: Routes = [{
-    path: 'ekip/:username',
-    component: MembersComponent,
+const usersRoutes: Routes = [{
+    path: 'uyeler/:username',
+    component: UsersComponent,
     canActivate: [AuthGuard]
 }, {
-    path: 'ekip',
-    component: MembersComponent,
+    path: 'uyeler',
+    component: UsersComponent,
     canActivate: [AuthGuard]
 }];
 
 @NgModule({
     imports: [
+        AuthModule,
         BrowserModule,
         FormsModule,
-        RouterModule.forChild(MembersRoutes),
+        RouterModule.forChild(usersRoutes),
 
     ],
     declarations: [
-        MembersComponent
+        UsersComponent,
     ],
     exports: [
-        MembersComponent
+        UsersComponent,
     ],
-    providers: [
-        MembersService
-    ]
 })
-export class MembersModule { }
+export class UsersModule { }

@@ -15,6 +15,7 @@ export class NavbarComponent {
     }];
     Router;
     isAdmin;
+    isMember;
     isLoggedIn;
     currentUser = {};
     AuthService;
@@ -37,9 +38,15 @@ export class NavbarComponent {
         this.AuthService.isLoggedIn().then(is => {
             this.isLoggedIn = is;
         });
+
+        this.AuthService.isMember().then(is => {
+            this.isMember = is;
+        });
+
         this.AuthService.isAdmin().then(is => {
             this.isAdmin = is;
         });
+        
         this.AuthService.getCurrentUser().then(user => {
             this.currentUser = user;
         });

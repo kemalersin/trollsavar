@@ -1,14 +1,31 @@
 .container
   .row
-    .col-md-3
-      .panel.panel-default(*ngFor='let user of users')
-        .panel-heading
-          b @{{user.username}}
+    .col-md-12
+      .form((keyup.enter)='addMember()')
+        .input-group
+          input.form-control(type='text',
+            [(ngModel)]='newMember',
+            name='member',
+            placeholder='Ekibe eklenecek Twitter kullanicisinin adini yaziniz'
+          )
+          .input-group-btn
+            button.btn.btn-default(type='submit', (click)='addMember()') Ekle
+      br
+  .row
+    .col-md-12
+      p.text-center
+        span(*ngIf='count===-1') Kayitlar listeleniyor...
+        span(*ngIf='count===0') Kayit bulunamadi!
+        span(*ngIf='count>0') Toplam {{count}} eklenmis hesap bulundu:
+      br
+  .row
+    .col-md-3(*ngFor='let member of members')
+      .panel.panel-default
         .panel-body
           p.text-center
-            img.profile-image.img-circle([src]='user.twitter.profile_image_url_https', width='48', height='48')
-          p
-            | {{user.name}}
-            br
-            | {{user.email}}
-          a([attr.href]='"https://www.twitter.com/" + user.username', target='_blank') Profili goruntule
+            img.profile-image.img-circle([src]='member.profile.profile_image_url_https', width='48', height='48')
+          h4.text-center
+            a([attr.href]='"https://www.twitter.com/" + member.username', target='_blank') {{member.username}}
+          p.text-center
+            a.trash((click)='delete(member)')
+              span.fa.fa-trash.fa-2x
