@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, ANALYZE_FOR_ENTRY_COMPONENTS } from '@angular/core';
 import { Location } from '@angular/common';
+import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { BlockService } from './block.service';
@@ -17,9 +18,15 @@ export class BlockComponent implements OnInit {
     index = 1;
     count = -1;
 
+    uploading;
+
+    @ViewChild('fileInput') fileInput: ElementRef;
+
     static parameters = [Location, ActivatedRoute, Router, BlockService];
 
-    constructor(private location: Location, private route: ActivatedRoute, private router: Router,
+    constructor(private location: Location,
+        private route: ActivatedRoute,
+        private router: Router,
         private blockService: BlockService) {
         this.route = route;
         this.router = router;
@@ -31,12 +38,14 @@ export class BlockComponent implements OnInit {
         this.route.paramMap.subscribe((params) => {
             this.username = params.get('username');
 
-            this.blockService.query(this.username).subscribe((blocks) => {
-                this.blocks = blocks;
+            this.blockService.query(this.username)
+                .subscribe((blocks) => {
+                    this.blocks = blocks;
 
-                this.username ? this.count = blocks.length :
-                    this.blockService.count().subscribe((count) => this.count = count);
-            });
+                    this.username ? this.count = blocks.length :
+                        this.blockService.count()
+                            .subscribe((count) => (this.count = count));
+                });
         });
     }
 
@@ -80,5 +89,27 @@ export class BlockComponent implements OnInit {
             this.count--;
             this.blocks.splice(this.blocks.indexOf(blockedUser), 1);
         });
+    }
+
+    onFileChanged(event) {
+        const fileList: FileList = event.target.files;
+
+        if (fileList.length == 0) {
+            return;
+        }
+
+        const file: File = fileList[0];
+
+        this.uploading = true;
+
+        this.blockService.upload(file)
+            .pipe(finalize(() => this.uploading = false))
+            .subscribe(() => {
+                this.blockService.count()
+                    .subscribe((count) => (this.count = count));
+
+                this.blockService.query()
+                    .subscribe((blocks) => (this.blocks = blocks))
+            });
     }
 }

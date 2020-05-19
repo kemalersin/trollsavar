@@ -10,6 +10,11 @@
           )
           .input-group-btn
             button.btn.btn-default(type='submit', (click)='addBlock()') Ekle
+            button.btn.btn-warning(type='button', (click)='fileInput.click()',
+              [disabled]='uploading', title='Yukle')
+              i.fa.fa-upload(*ngIf='!uploading')
+              i.fa.fa-spinner.fa-spin(*ngIf='uploading')
+            <input #fileInput type='file' name='list' class='hidden' (change)='onFileChanged($event)' />
       br
   .row
     .col-md-12
