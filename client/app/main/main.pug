@@ -1,6 +1,10 @@
-h3.centered(*ngIf='isLoggedIn')
-  i.fa.fa-twitter.text-info
-  | &nbsp; Twitter ile baglandiniz.
-a.btn.btn-primary.btn-lg.centered(href='/auth/twitter', *ngIf='!isLoggedIn')
-  i.fa.fa-twitter
-  | &nbsp; Twitter ile Baglan
+h3.centered
+  p.text-center
+    img(src='assets/images/logo.jpg', width='200', height='200')
+  br
+  p(*ngIf='isLoggedIn')
+    | &nbsp; Katildiginiz icin tesekkurler!
+  p.text-center(*ngIf='!isLoggedIn')
+    a.btn.btn-primary.btn-lg(href='/auth/twitter')
+      i.fa.fa-twitter
+      | &nbsp; Aramiza Katil

@@ -9,6 +9,7 @@ module.exports = {
 
     TWITTER_ID: 'app-id',
     TWITTER_SECRET: 'secret',
+    TWITTER_MASTER: '',
 
     // Control debug level for modules using visionmedia/debug
     DEBUG: ''
