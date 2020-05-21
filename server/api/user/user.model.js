@@ -1,11 +1,8 @@
 /*eslint no-invalid-this:0*/
-import crypto from 'crypto';
 import mongoose, { Schema } from 'mongoose';
 import { registerEvents } from './user.events';
 
 mongoose.Promise = require('bluebird');
-
-const authTypes = ['twitter'];
 
 var UserSchema = new Schema({
     name: String,
@@ -17,7 +14,11 @@ var UserSchema = new Schema({
     },
     profile: {},
     accessToken: String,
-    accessTokenSecret: String
+    accessTokenSecret: String,
+    lastBlockId: {
+        type: Schema.ObjectId,
+        default: null
+    }
 }, { timestamps: true });
 
 UserSchema

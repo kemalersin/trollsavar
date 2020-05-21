@@ -15,7 +15,6 @@ export function setup(User, config) {
     },
         async function (token, tokenSecret, profile, done) {
             profile._json.id = `${profile._json.id}`;
-            profile.id = `${profile.id}`;
 
             let role;
 
@@ -28,7 +27,7 @@ export function setup(User, config) {
             }
 
             User.findOne({
-                'profile.id': profile.id
+                'profile.id': profile._json.id
             }).exec()
                 .then(user => {
                     if (user) {
@@ -47,6 +46,7 @@ export function setup(User, config) {
                         profile: profile._json,
                         accessToken: token,
                         accessTokenSecret: tokenSecret,
+                        lastBlockId: null,
                         role
                     });
 

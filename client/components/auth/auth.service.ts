@@ -131,9 +131,21 @@ export class AuthService {
         return !!this.currentUser._id;
     }
 
+    isUser(callback?) {
+        return this.getCurrentUser().then(user => {
+            var is = user.role && user.role === 'user';
+            safeCb(callback)(is);
+            return is;
+        });
+    }
+
+    isUserSync() {
+        return this.currentUser.role === 'user';
+    }      
+
     isMember(callback?) {
         return this.getCurrentUser().then(user => {
-            var is = (user.role || 'user' !== 'user');
+            var is = user.role && user.role !== 'user';
             safeCb(callback)(is);
             return is;
         });

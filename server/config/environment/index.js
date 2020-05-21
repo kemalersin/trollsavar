@@ -40,7 +40,8 @@ var all = {
         options: {
             db: {
                 safe: true
-            }
+            },
+            useNewUrlParser: true
         }
     },
 

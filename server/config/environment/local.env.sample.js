@@ -12,5 +12,11 @@ module.exports = {
     TWITTER_MASTER: '',
 
     // Control debug level for modules using visionmedia/debug
-    DEBUG: ''
+    DEBUG: '',
+
+    BLOCK_ROUTE: 'block',
+    BLOCK_LIMIT_PER_APP: 10000,
+    BLOCK_LIMIT_PER_USER: 900,
+
+    REDIRECT_URL: 'https://twitter.com/isimsizhareket'
 };

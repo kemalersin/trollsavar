@@ -14,11 +14,11 @@
         li(*ngIf='isAdmin', routerLinkActive='active')
           a(routerLink='/ekip') Ekip
         li(*ngIf='isMember', routerLinkActive='active')
-          a(routerLink='/uyeler') Uyeler 
+          a(routerLink='/uyeler') Üyeler 
         li(*ngIf='isMember', routerLinkActive='active')
           a(routerLink='/engelliler') Engelliler                    
       ul.nav.navbar-nav.navbar-right
         li(*ngIf='isLoggedIn')
           p.navbar-text Selam {{ currentUser.name }}
         li(*ngIf='isLoggedIn')
-          a((click)='logout()', style='cursor: pointer;') Cikis
+          a((click)='logout()', style='cursor: pointer;') Çıkış

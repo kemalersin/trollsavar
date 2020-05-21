@@ -6,7 +6,7 @@
           input.form-control(type='text',
             [(ngModel)]='newBlock',
             name='block',
-            placeholder='Engellenecek Twitter kullanicisinin adini yaziniz'
+            placeholder='Engellenecek Twitter kullanıcısının adını yazınız'
           )
           .input-group-btn
             button.btn.btn-default(type='submit', (click)='addBlock()') Ekle
@@ -19,9 +19,9 @@
   .row
     .col-md-12
       p.text-center
-        span(*ngIf='count===-1') Kayitlar listeleniyor...
-        span(*ngIf='count===0') Kayit bulunamadi!
-        span(*ngIf='count>0') Toplam {{count}} engellenmis hesap bulundu:
+        span(*ngIf='count===-1') Kayıtlar listeleniyor...
+        span(*ngIf='count===0') Kayıt bulunamadı!
+        span(*ngIf='count>0') Toplam {{count}} engellenmiş hesap bulundu:
       br
   .row(infiniteScroll,
       [infiniteScrollDistance]='0.1',

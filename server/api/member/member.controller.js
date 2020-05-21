@@ -39,7 +39,7 @@ export function create(req, res) {
     twitter.get('users/show', { screen_name: username })
         .then((profile) => {
             if (profile.id == req.user.profile.id) {
-                return res.status(500).send('Buna hic gerek yok sahip!');
+                return res.status(500).send('Buna hiç gerek yok sahip!');
             }
 
             Member.findOne({ 'profile.id': profile.id }).exec()
@@ -61,7 +61,7 @@ export function create(req, res) {
                 })
                 .catch(handleError(res));
         })
-        .catch((error) => res.status(404).send('Kullanici bulunamadi!'));
+        .catch((error) => res.status(404).send('Kullanıcı bulunamadı!'));
 }
 
 export function show(req, res, next) {
