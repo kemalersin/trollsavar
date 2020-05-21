@@ -3,7 +3,6 @@
  */
 
 import express from 'express';
-import expressStaticGzip from 'express-static-gzip';
 import favicon from 'serve-favicon';
 import morgan from 'morgan';
 import compression from 'compression';
@@ -18,6 +17,7 @@ import passport from 'passport';
 import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import mongoose from 'mongoose';
+
 var MongoStore = connectMongo(session);
 
 export default function(app) {
@@ -32,11 +32,6 @@ export default function(app) {
         app.use(favicon(path.join(config.root, 'client', 'favicon.ico')));
     }
 
-    app.set('appPath', path.join(config.root, 'client'));
-    app.use(express.static(app.get('appPath')));
-    if(env === 'production') {
-        app.use('/', expressStaticGzip(app.get('appPath')));
-    }
     app.use(morgan('dev'));
 
     app.set('views', `${config.root}/server/views`);
@@ -68,9 +63,9 @@ export default function(app) {
      */
     if(env !== 'test' && env !== 'development') {
         app.use(lusca({
-            csrf: {
-                header: 'x-xsrf-token',
-            },
+            /*csrf: {
+                header: 'x-xsrf-token'
+            },*/
             xframe: 'SAMEORIGIN',
             hsts: {
                 maxAge: 31536000, //1 year, in seconds

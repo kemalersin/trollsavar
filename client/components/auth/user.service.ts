@@ -28,7 +28,7 @@ export class UserService {
         return this.http.get(`/api/users/${username ? username : ""}?index=${index}`) as Observable<UserType[]>;
     }
 
-    get(username = ''): Observable<UserType[]> {
+    get(username): Observable<UserType[]> {
         return this.http.get(`/api/users/${username ? username : "me"}`) as Observable<UserType[]>;
     }
 

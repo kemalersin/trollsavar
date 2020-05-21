@@ -2,15 +2,30 @@
  * Main application routes
  */
 
-import errors from './components/errors';
 import path from 'path';
+import express from 'express';
+import expressStaticGzip from 'express-static-gzip';
 
-export default function(app) {
+import errors from './components/errors';
+import config from './config/environment';
+
+export default function (app) {
     // Insert routes below
+    var env = process.env.NODE_ENV;
+
     app.use('/api/blocks', require('./api/block'));
     app.use('/api/users', require('./api/user'));
     app.use('/api/members', require('./api/member'));
     app.use('/auth', require('./auth').default);
+    
+    app.set('appPath', path.join(config.root, 'client'));
+    app.use(express.static(app.get('appPath')));
+    
+    if(env === 'production') {
+        app.use('/', expressStaticGzip(app.get('appPath')));
+    }
+
+    console.log(app.get('appPath'));
 
     // All undefined asset or api routes should return a 404
     app.route('/:url(api|auth|components|app|bower_components|assets)/*')

@@ -8,13 +8,13 @@ var upload = multer({ dest: 'upload/' });
 
 var router = Router();
 
-router.get('/', auth.hasRole('admin,member'), controller.index);
-router.get('/count', auth.hasRole('admin,member'), controller.count);
-router.get('/:username', auth.hasRole('admin,member'), controller.show);
-router.delete('/:id', auth.hasRole('admin,member'), controller.destroy);
-router.post('/', auth.hasRole('admin,member'), controller.create);
+router.get('/', auth.hasRole('member'), controller.index);
+router.get('/count', auth.hasRole('member'), controller.count);
+router.get('/:username', auth.hasRole('member'), controller.show);
+router.delete('/:id', auth.hasRole('member'), controller.destroy);
+router.post('/', auth.hasRole('member'), controller.create);
 
-router.post('/upload', auth.hasRole('admin,member'),
+router.post('/upload', auth.hasRole('member'),
     upload.single('list'),
     controller.upload
 );

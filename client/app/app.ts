@@ -1,5 +1,7 @@
 import './app.scss';
 
+//import 'reflect-metadata';
+//import 'zone.js/dist/zone';
 import './polyfills';
 
 import { enableProdMode } from '@angular/core';
