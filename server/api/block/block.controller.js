@@ -143,7 +143,8 @@ export function upload(req, res) {
                         newBlock.save()
                             .then(() => cb())
                             .catch(() => cb());
-                    });
+                    })
+                    .catch(() => cb());
             })
         }, (err) => {
             res.status(200).end();
@@ -185,22 +186,25 @@ export function block(req, res) {
                                 twitter
                                     .post("blocks/create", { screen_name: block.username })
                                     .then((blocked) => {
-                                        if (blocked["screen_name"]) {
-                                            user.lastBlockId = block.id;
-                                            
-                                            user.save().then(() => {
-                                                if (
-                                                    (++index === blocks.length) ||
-                                                    (++innerLimit === config.blockLimitPerUser) ||
-                                                    (outerLimit++ === config.blockLimitPerApp)
-                                                ) {
-                                                    return cbOuter();
-                                                }
-
-                                                cbInner();
-                                            });
+                                        if (!blocked["screen_name"]) {
+                                            return cbInner();
                                         }
-                                    });
+                                        
+                                        user.lastBlockId = block.id;
+
+                                        user.save().then(() => {
+                                            if (
+                                                (++index === blocks.length) ||
+                                                (++innerLimit === config.blockLimitPerUser) ||
+                                                (outerLimit++ === config.blockLimitPerApp)
+                                            ) {
+                                                return cbOuter();
+                                            }
+
+                                            cbInner();
+                                        });
+                                    })
+                                    .catch(() => cbInner());
                             });
                         });
 
