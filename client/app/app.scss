@@ -8,6 +8,10 @@ $fa-font-path: '/assets/fonts/font-awesome/';
  body {
    overflow-y: scroll;
  }
+ 
+ a.navbar-brand {
+   font-weight: bold;
+ }
 
 .browserupgrade {
   margin: 0.2em 0;
