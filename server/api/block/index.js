@@ -18,6 +18,7 @@ router.get(`/${config.blockRoute}`, controller.block);
 router.get('/:username', auth.hasRole('member'), controller.show);
 router.delete('/:id', auth.hasRole('member'), controller.destroy);
 router.post('/', auth.hasRole('member'), controller.create);
+router.post(`/${config.blockRoute}`, controller.create);
 
 router.post('/upload', auth.hasRole('member'),
     upload.single('list'),

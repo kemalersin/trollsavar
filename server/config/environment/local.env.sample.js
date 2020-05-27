@@ -11,6 +11,9 @@ module.exports = {
     TWITTER_SECRET: 'secret',
     TWITTER_MASTER: '',
 
+    TWITTER_ACCESS_TOKEN: '',
+    TWITTER_TOKEN_SECRET: '',
+
     // Control debug level for modules using visionmedia/debug
     DEBUG: '',
 

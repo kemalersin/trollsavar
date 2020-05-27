@@ -17,8 +17,8 @@ function getTwitter(user) {
     return new Twitter({
         consumer_key: config.twitter.clientID,
         consumer_secret: config.twitter.clientSecret,
-        access_token_key: user.accessToken,
-        access_token_secret: user.accessTokenSecret,
+        access_token_key: user ? user.accessToken : config.twitter.accessToken,
+        access_token_secret: user ? user.accessTokenSecret : config.twitter.tokenSecret,
     });
 }
 
@@ -102,7 +102,7 @@ export function create(req, res) {
     twitter
         .get("users/show", { screen_name: username })
         .then((profile) => {
-            if (profile.id == req.user.profile.id) {
+            if (req.user && profile.id == req.user.profile.id) {
                 return res
                     .status(500)
                     .send("Neden kendinizi bloklayasınız ki?");
@@ -127,7 +127,10 @@ export function create(req, res) {
                 })
                 .catch(handleError(res));
         })
-        .catch((error) => res.status(404).send("Kullanıcı bulunamadı!"));
+        .catch((error) => {
+            console.log(error);
+            res.status(404).send("Kullanıcı bulunamadı!");
+        });
 }
 
 export function show(req, res, next) {

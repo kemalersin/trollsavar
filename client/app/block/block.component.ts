@@ -3,7 +3,6 @@ import {
     ViewChild,
     ElementRef,
     OnInit,
-    ANALYZE_FOR_ENTRY_COMPONENTS,
 } from "@angular/core";
 import { Location } from "@angular/common";
 import { finalize } from "rxjs/operators";
