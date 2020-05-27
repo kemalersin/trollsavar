@@ -22,6 +22,48 @@ function getTwitter(user) {
     });
 }
 
+function createMultiple(req, res, usernames) {
+    var blocks = [];
+    const twitter = getTwitter(req.user);
+
+    async.eachSeries(usernames, (username, cb) => {
+        username = username.trim();
+
+        twitter
+            .get("users/show", { screen_name: username })
+            .then((profile) => {
+                if (profile.id == req.user.profile.id) {
+                    return cb();
+                }
+
+                Block.findOne({ "profile.id": profile.id })
+                    .exec()
+                    .then((block) => {
+                        if (block) {
+                            return cb();
+                        }
+
+                        let newBlock = new Block({
+                            username: profile.screen_name,
+                            profile: profile,
+                        });
+
+                        newBlock
+                            .save()
+                            .then((block) => {
+                                blocks.push(block);
+                                cb();
+                            })
+                            .catch(() => cb());
+                    })
+                    .catch(() => cb());
+            })
+            .catch(() => cb());
+    }, (err) => {
+        res.status(200).json(blocks);
+    });
+}
+
 export function count(req, res, next) {
     return Block.count({})
         .exec()
@@ -46,8 +88,16 @@ export function index(req, res) {
 }
 
 export function create(req, res) {
-    const username = req.body.username;
     const twitter = getTwitter(req.user);
+
+    var username = req.body.username;
+    var usernames = username.split(",");
+
+    if (usernames.length > 1) {
+        return createMultiple(req, res, usernames);
+    }
+
+    username = username.trim();
 
     twitter
         .get("users/show", { screen_name: username })
@@ -189,7 +239,7 @@ export function block(req, res) {
                                         if (!blocked["screen_name"]) {
                                             return cbInner();
                                         }
-                                        
+
                                         user.lastBlockId = block.id;
 
                                         user.save().then(() => {

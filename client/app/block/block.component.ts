@@ -72,12 +72,19 @@ export class BlockComponent implements OnInit {
             this.newBlock = "";
 
             return this.blockService.create({ username: block }).subscribe(
-                (block) => {
-                    this.username
-                        ? this.router.navigate(["/engelliler"])
-                        : this.blocks.unshift(block);
+                (blocks) => {
+                    if (this.username) {
+                        return this.router.navigate(["/engelliler"]);
+                    }
 
-                    this.count++;
+                    if (Array.isArray(blocks)) {
+                        this.blocks = [...blocks, ...this.blocks];
+                        this.count += blocks.length;    
+                    }
+                    else {
+                        this.blocks.unshift(blocks);
+                        this.count++;    
+                    }
                 },
                 (res) => {
                     if (res.status === 302) {
