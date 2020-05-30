@@ -123,8 +123,25 @@ export class AuthService {
 
     isLoggedIn(callback?) {
         let is = !!this.currentUser._id;
-        safeCb(callback)(is);
-        return Promise.resolve(is);
+
+        if (is || !localStorage.getItem("id_token")) {
+            safeCb(callback)(is);
+            return Promise.resolve(is);
+        } else {
+            return this.UserService.get()
+                .toPromise()
+                .then((user: User) => {
+                    this.currentUser = user;
+                    safeCb(callback)(!!this.currentUser._id)
+                    return !!this.currentUser._id;
+                })
+                .catch((err) => {
+                    localStorage.removeItem("id_token");
+                    safeCb(callback)(false);
+
+                    return false;
+                });
+        }
     }
 
     isLoggedInSync() {

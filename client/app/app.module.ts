@@ -26,9 +26,10 @@ export function tokenGetter() {
 
 const appRoutes: Routes = [{
     path: '',
-    redirectTo: '/anasayfa',
+    redirectTo: '/',
     pathMatch: 'full'
-}];
+},
+{ path: "**", redirectTo: "/" }];
 
 @NgModule({
     imports: [

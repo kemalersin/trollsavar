@@ -11,7 +11,7 @@ export class NavbarComponent {
     isCollapsed = true;
     menu = [{
         title: 'Ana Sayfa',
-        link: '/anasayfa',
+        link: '/',
     }];
     Router;
     isAdmin;
@@ -54,7 +54,7 @@ export class NavbarComponent {
 
     logout() {
         return this.AuthService.logout().then(() => {
-            this.Router.navigateByUrl('/anasayfa');
+            this.Router.navigateByUrl('/');
             this.reset();
         });
     }}
