@@ -257,7 +257,21 @@ export function block(req, res) {
                                             cbInner();
                                         });
                                     })
-                                    .catch(() => cbInner());
+                                    .catch((err) => {
+                                        console.log(err);
+
+                                        if (
+                                            Array.isArray(err) && (
+                                                err[0].code == 34 ||
+                                                err[0].code == 89 ||
+                                                err[0].code == 205
+                                            )
+                                        ) {
+                                            return cbOuter();
+                                        }
+
+                                        cbInner();
+                                    });
                             });
                         });
 
