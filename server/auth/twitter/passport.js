@@ -31,14 +31,15 @@ export function setup(User, config) {
             }).exec()
                 .then(user => {
                     if (user) {
-                        if (user.role != role) {
-                            user.role = role;
-                            user.save();
-                        }
+                        user.role = role;
+                        user.accessToken = token;
+                        user.accessTokenSecret = tokenSecret;
+                        
+                        user.save();
 
                         return done(null, user);
                     }
-
+                    
                     user = new User({
                         name: profile.displayName,
                         username: profile.username,
