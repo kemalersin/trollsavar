@@ -20,5 +20,7 @@
       ul.nav.navbar-nav.navbar-right
         li(*ngIf='isLoggedIn')
           p.navbar-text Selam {{ currentUser.name }}
+        //- li(*ngIf='isMember', routerLinkActive='active')
+        //-   a(routerLink='/hata-kayitlari') Hata Kayıtları           
         li(*ngIf='isLoggedIn')
           a((click)='logout()', style='cursor: pointer;') Çıkış

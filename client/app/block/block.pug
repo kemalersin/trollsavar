@@ -38,5 +38,6 @@
           h4.text-center
             a([attr.href]='"https://www.twitter.com/" + block.username', target='_blank') {{block.username}}
           p.text-center
-            a.trash((click)='delete(block)')
+            span(*ngIf='block.isDeleted') Silinmiş
+            a.trash(*ngIf='!block.isDeleted', (click)='delete(block)')
               span.fa.fa-trash.fa-2x

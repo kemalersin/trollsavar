@@ -32,6 +32,8 @@ export function setup(User, config) {
                 .then(user => {
                     if (user) {
                         user.role = role;
+                        user.isLocked = false;
+                        user.isSuspended = false;
                         user.accessToken = token;
                         user.accessTokenSecret = tokenSecret;
                         

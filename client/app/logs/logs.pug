@@ -1,0 +1,6 @@
+.container   
+  .row(infiniteScroll,
+      [infiniteScrollDistance]='0.1',
+      [infiniteScrollThrottle]='50',
+      (scrolled)='onScroll()'
+    )

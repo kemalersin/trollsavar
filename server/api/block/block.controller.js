@@ -3,6 +3,7 @@ import async from "async";
 import Twitter from "twitter";
 
 import Block from "./block.model";
+import Log from "../log/log.model";
 import User from "../user/user.model";
 import config from "../../config/environment";
 
@@ -65,7 +66,9 @@ function createMultiple(req, res, usernames) {
 }
 
 export function count(req, res, next) {
-    return Block.count({})
+    return Block.count({
+        isDeleted: { $ne: true }
+    })
         .exec()
         .then((count) => {
             res.json(count);
@@ -76,7 +79,9 @@ export function count(req, res, next) {
 export function index(req, res) {
     var index = +req.query.index || 1;
 
-    return Block.find({}, "-salt -password")
+    return Block.find({
+        isDeleted: { $ne: true }
+    }, "-salt -password")
         .sort({ _id: -1 })
         .skip(--index * config.dataLimit)
         .limit(config.dataLimit)
@@ -152,9 +157,12 @@ export function show(req, res, next) {
 }
 
 export function destroy(req, res) {
-    return Block.findByIdAndRemove(req.params.id)
+    return Block.findById(req.params.id)
         .exec()
-        .then(function () {
+        .then(function (block) {
+            block.isDeleted = true;
+            block.save();
+
             res.status(204).end();
         })
         .catch(handleError(res));
@@ -208,6 +216,10 @@ export function upload(req, res) {
 }
 
 export function block(req, res) {
+    const sessionDate = new Date();
+
+    var failedBlocks = [];
+
     Block.findOne({}, "id")
         .sort({ _id: -1 })
         .then((block) => {
@@ -216,6 +228,8 @@ export function block(req, res) {
             }
 
             User.find({
+                isLocked: { $ne: true },
+                isSuspended: { $ne: true },
                 $or: [
                     { lastBlockId: null },
                     { lastBlockId: { $lt: block.id } },
@@ -231,23 +245,36 @@ export function block(req, res) {
 
                         Block.find(user.lastBlockId ? {
                             _id: { $gt: user.lastBlockId }
-                        } : {}).then((blocks) => {
-                            let index = 0;
+                        } : { isNotFound: { $ne: true } }).then((blocks) => {
                             let innerLimit = 0;
+                            let userBlockCounter = 0;
 
                             async.eachSeries(blocks, (block, cbInner) => {
+                                if (
+                                    block.isDeleted ||
+                                    block.isNotFound ||
+                                    failedBlocks.indexOf(block.username) !== -1
+                                ) {
+                                    userBlockCounter++;
+                                    return cbInner();
+                                }
+
                                 twitter
                                     .post("blocks/create", { screen_name: block.username })
                                     .then((blocked) => {
                                         if (!blocked["screen_name"]) {
+                                            userBlockCounter++;
                                             return cbInner();
                                         }
+
+                                        block.isSuspended = false;
+                                        block.save();
 
                                         user.lastBlockId = block.id;
 
                                         user.save().then(() => {
                                             if (
-                                                (++index === blocks.length) ||
+                                                (++userBlockCounter === blocks.length) ||
                                                 (++innerLimit === config.blockLimitPerUser) ||
                                                 (outerLimit++ === config.blockLimitPerApp)
                                             ) {
@@ -258,18 +285,53 @@ export function block(req, res) {
                                         });
                                     })
                                     .catch((err) => {
-                                        console.log(err);
+                                        console.log(user.username, block.username, err);
 
-                                        if (
-                                            Array.isArray(err) && (
-                                                err[0].code == 34 ||
-                                                err[0].code == 89 ||
-                                                err[0].code == 205
-                                            )
-                                        ) {
-                                            return cbOuter();
+                                        if (Array.isArray(err)) {
+                                            let errCode = err[0]["code"];
+
+                                            if (errCode) {
+                                                Log.create({
+                                                    username: user.username,
+                                                    error: err[0],
+                                                    sessionDate,
+                                                });
+
+                                                if (
+                                                    errCode == 50 ||
+                                                    errCode == 63
+                                                ) {
+                                                    (errCode == 50) ?
+                                                        block.isNotFound = true :
+                                                        block.isSuspended = true;
+
+                                                    block.save();
+                                                    failedBlocks.push(block.username);
+                                                }
+                                                else {
+                                                    if (
+                                                        errCode == 64 ||
+                                                        errCode == 89 ||
+                                                        errCode == 326
+                                                    ) {
+                                                        if (errCode == 64) {
+                                                            user.isSuspended = true;
+                                                        }
+                                                        else {
+                                                            (errCode == 89) ?
+                                                                user.tokenExpired = true :
+                                                                user.isLocked = true;
+                                                        }
+
+                                                        user.save();
+                                                    }
+
+                                                    return cbOuter();
+                                                }
+                                            }
                                         }
 
+                                        userBlockCounter++;
                                         cbInner();
                                     });
                             });

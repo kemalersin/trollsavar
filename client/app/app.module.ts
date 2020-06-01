@@ -19,6 +19,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { MembersModule } from './members/members.module';
 import { UsersModule } from './users/users.module';
 import { BlockModule } from './block/block.module';
+import { LogsModule } from './logs/logs.module';
 
 export function tokenGetter() {
     return localStorage.getItem('id_token');
@@ -46,7 +47,8 @@ const appRoutes: Routes = [{
         DirectivesModule,
         MembersModule,
         UsersModule,
-        BlockModule
+        BlockModule,
+        LogsModule
     ],
     declarations: [AppComponent],
     bootstrap: [AppComponent],
