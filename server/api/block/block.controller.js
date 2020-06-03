@@ -117,7 +117,11 @@ export function create(req, res) {
                 .exec()
                 .then((block) => {
                     if (block) {
-                        return res.status(302).json(block);
+                        if (!block.isDeleted) {
+                            return res.status(302).json(block);
+                        }
+
+                        Block.findByIdAndDelete(block._id).exec();
                     }
 
                     let newBlock = new Block({
