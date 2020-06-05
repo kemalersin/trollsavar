@@ -321,6 +321,7 @@ export async function block(req, res) {
                                             if (errCode) {
                                                 Log.create({
                                                     username: user.username,
+                                                    blockId: block._id,
                                                     error: err[0],
                                                     sessionDate,
                                                 });
@@ -332,9 +333,6 @@ export async function block(req, res) {
                                                     (errCode == 50) ?
                                                         block.isNotFound = true :
                                                         block.isSuspended = true;
-
-
-                                                    block.profile = spamed;
 
                                                     block.save();
                                                     failedBlocks.push(block.username);

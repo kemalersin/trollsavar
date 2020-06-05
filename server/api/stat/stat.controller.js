@@ -1,3 +1,5 @@
+import endOfDay from "date-fns/endOfDay";
+import startOfDay from "date-fns/startOfDay";
 
 import Stat from '../stat/stat.model';
 import Block from '../block/block.model';
@@ -36,13 +38,23 @@ export async function all(req, res, next) {
 
     const perUserTotal = await Block.count();
 
-    const perUserToday = await Block.count()
-        .where('createdAt')
-        .gt(startOfToday);
+    const perUserToday = await Block.count({
+        "createdAt": {
+            $gte: startOfDay(startOfToday),
+            $lte: endOfDay(startOfToday)
+        }
+    });
 
     const dailyTotal = await Stat.aggregate(aggregation);
 
-    aggregation.unshift({ $match: { "sessionDate": { $gt: startOfToday } } });
+    aggregation.unshift({
+        $match: {
+            "sessionDate": {
+                $gte: startOfDay(startOfToday),
+                $lte: endOfDay(startOfToday)
+            }
+        }
+    });
 
     const dailyToday = await Stat.aggregate(aggregation);
 
