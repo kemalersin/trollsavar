@@ -11,9 +11,14 @@ export const userRoles = ['user', 'member', 'admin'];
 
 export const dataLimit = 20;
 
+export const errors = {
+    userNotFound: "Kullanıcı bulunamadı!"
+}
+
 export default {
     env,
     port,
+    errors,    
     userRoles,
     dataLimit,
     redirectUrl,

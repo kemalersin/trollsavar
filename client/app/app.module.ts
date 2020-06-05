@@ -12,6 +12,9 @@ import {
 
 import { RouterModule, Routes } from '@angular/router';
 
+import { ToastrModule } from "ngx-toastr";
+import { NgxDialogsModule } from "ngx-dialogs";
+
 import { AppComponent } from './app.component';
 import { MainModule } from './main/main.module';
 import { DirectivesModule } from '../components/directives.module';
@@ -48,7 +51,14 @@ const appRoutes: Routes = [{
         MembersModule,
         UsersModule,
         BlockModule,
-        LogsModule
+        LogsModule,
+        NgxDialogsModule,
+        ToastrModule.forRoot({
+            timeOut: 2500,
+            progressBar: true,
+            preventDuplicates: true,
+            positionClass: "toast-top-center",
+        })
     ],
     declarations: [AppComponent],
     bootstrap: [AppComponent],

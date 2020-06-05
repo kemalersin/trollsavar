@@ -4,6 +4,8 @@ import Twitter from "twitter";
 
 import Block from "./block.model";
 import Log from "../log/log.model";
+import Stat from "../stat/stat.model";
+import Flag from "./flag.model";
 import User from "../user/user.model";
 import config from "../../config/environment";
 
@@ -219,12 +221,21 @@ export function upload(req, res) {
     }
 }
 
-export function block(req, res) {
+export async function block(req, res) {
     const sessionDate = new Date();
 
     var failedBlocks = [];
 
-    Block.findOne({}, "id")
+    var success = 0;
+    var failed = 0;
+
+    const status = await Flag.findOne({ "blocking.started": true }).exec();
+
+    if (status && status["blocking"]) {
+        return res.status(304).end();
+    }
+
+    Block.findOne({ isDeleted: { $ne: true } }, "id")
         .sort({ _id: -1 })
         .then((block) => {
             if (!block) {
@@ -243,6 +254,14 @@ export function block(req, res) {
                 .sort({ lastBlockId: 1 })
                 .then((users) => {
                     let outerLimit = 0;
+
+                    Flag.updateOne(
+                        { "blocking.started": false },
+                        {
+                            "blocking.started": true,
+                            "blocking.startDate": new Date()
+                        }, { upsert: true }
+                    ).exec();
 
                     async.eachSeries(users, (user, cbOuter) => {
                         let twitter = getTwitter(user);
@@ -267,10 +286,14 @@ export function block(req, res) {
                                     .post("blocks/create", { screen_name: block.username })
                                     .then((blocked) => {
                                         if (!blocked["screen_name"]) {
+                                            failed++;
                                             userBlockCounter++;
                                             return cbInner();
                                         }
 
+                                        success++;
+
+                                        block.profile = blocked;
                                         block.isSuspended = false;
                                         block.save();
 
@@ -289,6 +312,7 @@ export function block(req, res) {
                                         });
                                     })
                                     .catch((err) => {
+                                        failed++;
                                         console.log(user.username, block.username, err);
 
                                         if (Array.isArray(err)) {
@@ -309,11 +333,15 @@ export function block(req, res) {
                                                         block.isNotFound = true :
                                                         block.isSuspended = true;
 
+
+                                                    block.profile = spamed;
+
                                                     block.save();
                                                     failedBlocks.push(block.username);
                                                 }
                                                 else {
                                                     if (
+                                                        errCode == 32 ||
                                                         errCode == 64 ||
                                                         errCode == 89 ||
                                                         errCode == 326
@@ -322,7 +350,7 @@ export function block(req, res) {
                                                             user.isSuspended = true;
                                                         }
                                                         else {
-                                                            (errCode == 89) ?
+                                                            (errCode == 32 || errCode == 89) ?
                                                                 user.tokenExpired = true :
                                                                 user.isLocked = true;
                                                         }
@@ -344,6 +372,22 @@ export function block(req, res) {
                         if (++outerLimit === config.blockLimitPerApp) {
                             return cbOuter();
                         }
+                    }, () => {
+                        let stat = new Stat({
+                            success,
+                            failed,
+                            sessionDate
+                        });
+
+                        stat.save();
+
+                        Flag.updateOne(
+                            { "blocking.started": true },
+                            {
+                                "blocking.started": false,
+                                "blocking.finishDate": new Date()
+                            }
+                        ).exec();
                     })
                 });
         });

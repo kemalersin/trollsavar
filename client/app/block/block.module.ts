@@ -3,12 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AuthGuard } from '../../components/auth/auth-guard.service';
 import { BlockService } from './block.service';
 import { BlockComponent } from './block.component';
-
 
 const BlockRoutes: Routes = [{
     path: 'engelliler/:username',
@@ -25,6 +25,7 @@ const BlockRoutes: Routes = [{
         BrowserModule,
         FormsModule,
         RouterModule.forChild(BlockRoutes),
+        TooltipModule.forRoot(),
         InfiniteScrollModule
     ],
     declarations: [

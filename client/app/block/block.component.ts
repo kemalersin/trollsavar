@@ -1,12 +1,12 @@
-import {
-    Component,
-    ViewChild,
-    ElementRef,
-    OnInit,
-} from "@angular/core";
+import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
 import { Location } from "@angular/common";
 import { finalize } from "rxjs/operators";
 import { Router, ActivatedRoute } from "@angular/router";
+
+import { Ngxalert } from "ngx-dialogs";
+import { ToastrService } from "ngx-toastr";
+
+import { errors } from "../app.constants";
 
 import { BlockService } from "./block.service";
 
@@ -25,14 +25,23 @@ export class BlockComponent implements OnInit {
 
     uploading;
 
+    alert: any = new Ngxalert();
+
     @ViewChild("fileInput") fileInput: ElementRef;
 
-    static parameters = [Location, ActivatedRoute, Router, BlockService];
+    static parameters = [
+        Location,
+        ActivatedRoute,
+        Router,
+        ToastrService,
+        BlockService,
+    ];
 
     constructor(
         private location: Location,
         private route: ActivatedRoute,
         private router: Router,
+        private toastr: ToastrService,
         private blockService: BlockService
     ) {
         this.route = route;
@@ -78,11 +87,10 @@ export class BlockComponent implements OnInit {
 
                     if (Array.isArray(blocks)) {
                         this.blocks = [...blocks, ...this.blocks];
-                        this.count += blocks.length;    
-                    }
-                    else {
+                        this.count += blocks.length;
+                    } else {
                         this.blocks.unshift(blocks);
-                        this.count++;    
+                        this.count++;
                     }
                 },
                 (res) => {
@@ -94,20 +102,26 @@ export class BlockComponent implements OnInit {
                         return this.router.navigate(["/engelliler", block]);
                     }
 
-                    alert(res.error);
+                    this.toastr.error(res.error);
                 }
             );
         }
     }
 
     delete(block) {
-        if (!confirm("Emin misiniz?")) {
-            return;
-        }
+        this.alert.create({
+            id: "remove-user",
+            title: "Kullanıcı Silinecektir",
+            message: "Silmek istediğinizden emin misiniz?",
+            customCssClass: "custom-alert",
+            confirm: () => {
+                this.alert.removeAlert("remove-user");
 
-        this.blockService.remove(block).subscribe((blockedUser) => {
-            this.count--;
-            this.blocks.splice(this.blocks.indexOf(blockedUser), 1);
+                this.blockService.remove(block).subscribe((blockedUser) => {
+                    this.count--;
+                    this.blocks.splice(this.blocks.indexOf(blockedUser), 1);
+                });
+            },
         });
     }
 

@@ -9,6 +9,7 @@ export default function (app) {
     var env = process.env.NODE_ENV;
 
     app.use('/api/logs', require('./api/log'));
+    app.use('/api/stats', require('./api/stat'));
     app.use('/api/blocks', require('./api/block'));
     app.use('/api/users', require('./api/user'));
     app.use('/api/members', require('./api/member'));
