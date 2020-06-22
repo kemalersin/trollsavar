@@ -2,6 +2,8 @@ import fs from "fs";
 import async from "async";
 import Twitter from "twitter";
 
+import differenceInMinutes from "date-fns/differenceInMinutes";
+
 import Block from "./block.model";
 import Log from "../log/log.model";
 import Stat from "../stat/stat.model";
@@ -76,6 +78,29 @@ export function count(req, res, next) {
             res.json(count);
         })
         .catch((err) => next(err));
+}
+
+export function resetTask(req, res) {
+    const now = new Date();
+
+    Flag.findOne({ "blocking.started": true })
+        .exec()
+        .then((task) => {
+            if (!task) {
+                return res.status(404).end();
+            }
+
+            if (differenceInMinutes(now, task.blocking.startDate) >= 44) {
+                task.blocking.started = false;
+                task.blocking.finishDate = now;
+
+                task.save();
+
+                return res.status(204).end();
+            }
+
+            return res.status(304).end();
+        });
 }
 
 export function index(req, res) {
@@ -259,7 +284,8 @@ export async function block(req, res) {
                         { "blocking.started": false },
                         {
                             "blocking.started": true,
-                            "blocking.startDate": new Date()
+                            "blocking.startDate": new Date(),
+                            "blocking.finishDate": null
                         }, { upsert: true }
                     ).exec();
 
@@ -288,6 +314,7 @@ export async function block(req, res) {
                                         if (!blocked["screen_name"]) {
                                             failed++;
                                             userBlockCounter++;
+
                                             return cbInner();
                                         }
 

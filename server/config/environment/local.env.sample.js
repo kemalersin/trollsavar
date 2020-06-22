@@ -4,6 +4,8 @@
 // You will need to set these on the server you deploy to.
 
 module.exports = {
+    PORT: 8080,
+    CLIENT_PORT: 8080,
     DOMAIN: 'http://localhost:9000',
     SESSION_SECRET: 'trollsavar-secret',
 
