@@ -309,7 +309,7 @@ export async function block(req, res) {
                                 }
 
                                 twitter
-                                    .post("blocks/create", { screen_name: block.username })
+                                    .post("blocks/create", { user_id: block.profile.id })
                                     .then((blocked) => {
                                         if (!blocked["screen_name"]) {
                                             failed++;
@@ -320,8 +320,10 @@ export async function block(req, res) {
 
                                         success++;
 
+                                        block.username = blocked.screen_name
                                         block.profile = blocked;
                                         block.isSuspended = false;
+
                                         block.save();
 
                                         user.lastBlockId = block.id;

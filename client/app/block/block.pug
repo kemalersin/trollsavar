@@ -23,7 +23,7 @@
       p.text-center(*ngIf='!uploading')
         span(*ngIf='count===-1') Kayıtlar listeleniyor...
         span(*ngIf='count===0') Kayıt bulunamadı!
-        span(*ngIf='count>0') Toplam {{count}} engellenmiş hesap bulundu:
+        span(*ngIf='count>0') Toplam {{ count | number }} engellenmiş hesap bulundu:
       br
   .row(infiniteScroll,
       [infiniteScrollDistance]='0.1',
