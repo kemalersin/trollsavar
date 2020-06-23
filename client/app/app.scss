@@ -39,7 +39,7 @@ a.navbar-brand {
   font-weight: bold;
 }
 
-a.pointer {
+.pointer {
   cursor: pointer;
 }
 
@@ -85,6 +85,13 @@ a[target='_blank'] {
     border-left: 5px solid #a94442;
     /* red */
   }
+}
+
+.btn:focus,
+.btn:active,
+.navbar-default .navbar-nav>.active>a {
+  outline: 0 !important;
+  outline: none !important;
 }
 
 .trash {

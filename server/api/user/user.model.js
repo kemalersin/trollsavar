@@ -1,7 +1,8 @@
 /*eslint no-invalid-this:0*/
 import crypto from 'crypto';
-mongoose.Promise = require('bluebird');
 import mongoose, { Schema } from 'mongoose';
+
+mongoose.Promise = require('bluebird');
 
 var UserSchema = new Schema({
     name: String,

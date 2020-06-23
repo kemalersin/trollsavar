@@ -215,6 +215,7 @@ export function resetPassword(req, res) {
 
     User.findOne({
         email: req.body.email,
+        provider: "local",
         isDeleted: { $ne: true },
         isBanned: { $ne: true }
     })
