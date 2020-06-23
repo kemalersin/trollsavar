@@ -4,12 +4,15 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { RouterModule, Routes } from "@angular/router";
 
+import { AuthGuard } from "../../components/auth/auth-guard.service";
+
 import { ListComponent } from "./list.component";
 
 const listRoutes: Routes = [
     {
         path: "listem",
         component: ListComponent,
+        canActivate: [AuthGuard],
     },
 ];
 

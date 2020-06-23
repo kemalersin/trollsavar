@@ -4,12 +4,15 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { RouterModule, Routes } from "@angular/router";
 
+import { AuthGuard } from "../../components/auth/auth-guard.service";
+
 import { RandomComponent } from "./random.component";
 
 const randomRoutes: Routes = [
     {
         path: "rastgele",
         component: RandomComponent,
+        canActivate: [AuthGuard],
     },
 ];
 
