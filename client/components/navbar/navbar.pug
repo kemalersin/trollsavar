@@ -16,9 +16,16 @@
         li(*ngIf='isMember', routerLinkActive='active')
           a(routerLink='/uyeler') Üyeler 
         li(*ngIf='isMember', routerLinkActive='active')
-          a(routerLink='/engelliler') Engelliler                    
+          a(routerLink='/engelliler') Engelliler    
+        li(*ngIf='isLoggedIn', routerLinkActive='active')
+          a(routerLink='/rastgele') Rastgele   
+        li(*ngIf='isLoggedIn', routerLinkActive='active')
+          a(routerLink='/listem') Listem                                     
       ul.nav.navbar-nav.navbar-right
         li(*ngIf='isLoggedIn')
           p.navbar-text Selam {{ currentUser.name || currentUser.username || 'isimsiz' }}
+        li(*ngIf='isLoggedIn && !isTwitterUser && !isAdmin && !isMember', routerLinkActive='active')
+          a(routerLink='/ayarlar')
+            span.glyphicon.glyphicon-cog          
         li(*ngIf='isLoggedIn')
           a((click)='logout()', style='cursor: pointer;') Çıkış

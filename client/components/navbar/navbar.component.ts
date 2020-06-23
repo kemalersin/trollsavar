@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from "@angular/router";
+import { filter } from "rxjs/operators";
+
 import { AuthService } from '../auth/auth.service';
 
 @Component({
@@ -9,15 +11,22 @@ import { AuthService } from '../auth/auth.service';
 })
 export class NavbarComponent {
     isCollapsed = true;
+
     menu = [{
         title: 'Ana Sayfa',
         link: '/',
     }];
+
     Router;
+
     isAdmin;
     isMember;
+    isTwitterUser;
+
     isLoggedIn;
+
     currentUser = {};
+
     AuthService;
 
     static parameters = [AuthService, Router];
@@ -32,6 +41,12 @@ export class NavbarComponent {
             this.currentUser = user;
             this.reset();
         });
+
+        router.events
+            .pipe(filter((event) => event instanceof NavigationEnd))
+            .subscribe((event: NavigationEnd) => {
+                this.isCollapsed = true;
+            });        
     }
 
     reset() {
@@ -43,6 +58,10 @@ export class NavbarComponent {
             this.isMember = is;
         });
 
+        this.authService.isTwitterUser().then((is) => {
+            this.isTwitterUser = is;
+        });        
+
         this.AuthService.isAdmin().then(is => {
             this.isAdmin = is;
         });
@@ -53,7 +72,7 @@ export class NavbarComponent {
     }
 
     logout() {
-        return this.AuthService.logout().then(() => {
+        return this.AuthService.logout(true).then(() => {
             this.Router.navigateByUrl('/');
             this.reset();
         });

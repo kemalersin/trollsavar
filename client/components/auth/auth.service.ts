@@ -88,8 +88,10 @@ export class AuthService {
             });
     }
 
-    logout() {
-        this.userService.logout().subscribe();
+    logout(force = false) {
+        if (force) {
+            this.userService.logout().subscribe();
+        }
 
         localStorage.removeItem("user");
         localStorage.removeItem("id_token");
@@ -113,6 +115,22 @@ export class AuthService {
                 return Promise.reject(err);
             });
     }
+
+    changeUsername(username, name, callback) {
+        return this.UserService.changeUsername(
+            { id: this.currentUser._id },
+            username,
+            name
+        )
+            .toPromise()
+            .then(() => {
+                this.currentUser.name = name;
+                this.currentUser.username = username;
+                
+                safeCb(callback)(null);
+            })
+            .catch((err) => safeCb(callback)(err));
+    }    
 
     changePassword(oldPassword, newPassword, callback) {
         return this.UserService.changePassword(
@@ -161,7 +179,7 @@ export class AuthService {
         return !!this.currentUser._id;
     }
 
-    isUser(callback?) {
+    isTwitterUser(callback?) {
         return this.getCurrentUser().then((user) => {
             var is =
                 user.role &&
@@ -172,7 +190,7 @@ export class AuthService {
         });
     }
 
-    isUserSync() {
+    isTwitterUserSync() {
         return this.currentUser.role === "user";
     }
 

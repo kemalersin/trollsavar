@@ -5,6 +5,7 @@
   "dependencies": {
     "@angular/animations": "^9.1.9",
     "@types/nodemailer": "^6.4.0",
+    "animate.css": "^4.1.0",
     "async": "^3.2.0",
     "babel-core": "^6.18.2",
     "babel-plugin-angular2-annotations": "^5.1.0",

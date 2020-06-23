@@ -57,6 +57,13 @@ export class UserService {
         return this.http.get("/api/users/logout");
     }
 
+    changeUsername(user, username, name) {
+        return this.http.put(`/api/users/${user.id || user._id}/username`, {
+            username,
+            name,
+        });
+    }    
+
     changePassword(user, oldPassword, newPassword) {
         return this.http.put(`/api/users/${user.id || user._id}/password`, {
             oldPassword,

@@ -1,6 +1,7 @@
 $fa-font-path: '/assets/fonts/font-awesome/';
 
 @import '~ngx-toastr/toastr.css';
+@import "~animate.css/animate.css";
 @import '~font-awesome/scss/font-awesome';
 
 body {
@@ -36,6 +37,10 @@ body {
 
 a.navbar-brand {
   font-weight: bold;
+}
+
+a.pointer {
+  cursor: pointer;
 }
 
 a[target='_blank'] {

@@ -18,7 +18,7 @@ import {
 import mail from '../../components/mail';
 
 export function count(req, res, next) {
-    return User.count({}).exec()
+    return User.count({ provider: 'twitter' }).exec()
         .then((count) => {
             res.json(count);
         })
@@ -28,7 +28,9 @@ export function count(req, res, next) {
 export function index(req, res) {
     var index = +req.query.index || 1;
 
-    return User.find({}, '-accessToken -accessTokenSecret')
+    return User.find({
+        provider: 'twitter'
+    }, '-accessToken -accessTokenSecret')
         .sort({ _id: -1 })
         .skip(--index * config.dataLimit)
         .limit(config.dataLimit)
@@ -110,7 +112,10 @@ export function show(req, res, next) {
     var username = req.params.username;
     var index = +req.query.index || 1;
 
-    return User.find({ username: { $regex: new RegExp(username, 'i') } })
+    return User.find({
+        username: { $regex: new RegExp(username, 'i') },
+        provider: 'twitter'
+    })
         .skip(--index * config.dataLimit)
         .limit(config.dataLimit)
         .exec()
@@ -145,6 +150,10 @@ export async function changeUsername(req, res) {
     User.findById(userId).exec()
         .then(user => {
             let exceed = false;
+
+            if (user.provider == 'twitter') {
+                return res.status(401).end();
+            }
 
             if (user.username == username && user.name == name) {
                 return res.status(204).end();
