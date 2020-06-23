@@ -16,6 +16,12 @@ module.exports = {
     TWITTER_ACCESS_TOKEN: '',
     TWITTER_TOKEN_SECRET: '',
 
+    MAIL_HOST: '',
+    MAIL_PORT: 465,
+    MAIL_USER: '',
+    MAIL_PASS: '',
+    MAIL_FROM: '',      
+
     // Control debug level for modules using visionmedia/debug
     DEBUG: '',
 

@@ -19,8 +19,6 @@
           a(routerLink='/engelliler') Engelliler                    
       ul.nav.navbar-nav.navbar-right
         li(*ngIf='isLoggedIn')
-          p.navbar-text Selam {{ currentUser.name }}
-        //- li(*ngIf='isMember', routerLinkActive='active')
-        //-   a(routerLink='/hata-kayitlari') Hata Kayıtları           
+          p.navbar-text Selam {{ currentUser.name || currentUser.username || 'isimsiz' }}
         li(*ngIf='isLoggedIn')
           a((click)='logout()', style='cursor: pointer;') Çıkış

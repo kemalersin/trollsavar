@@ -7,11 +7,31 @@ body {
   overflow-y: scroll;
 }
 
-.centered {
+.centered,
+.h-centered,
+.v-centered {
   position: absolute;
+}
+
+.h-centered {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.v-centered {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.centered {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.vcenter {
+  display: flex;
+  align-items: center;
 }
 
 a.navbar-brand {
@@ -19,7 +39,6 @@ a.navbar-brand {
 }
 
 a[target='_blank'] {
-
   &:visited,
   &:link,
   &:active {
@@ -50,15 +69,17 @@ a[target='_blank'] {
   display: none !important;
 }
 
-.ng-valid[required],
-.ng-valid.required {
-  border-left: 5px solid #42A948;
-  /* green */
-}
+.validated {
+  .ng-valid[required],
+  .ng-valid.required {
+    border-left: 5px solid #42A948;
+    /* green */
+  }
 
-.ng-invalid:not(form) {
-  border-left: 5px solid #a94442;
-  /* red */
+  .ng-invalid:not(form) {
+    border-left: 5px solid #a94442;
+    /* red */
+  }
 }
 
 .trash {
@@ -135,6 +156,38 @@ a[target='_blank'] {
   .ngx-dialog.custom-alert {
     .ngx-dialog-content {
       width: 400px !important;
+    }
+  }
+}
+
+@media (max-width: 568px) {
+  form.centered {
+    width: 100%;
+    left: initial;
+    transform: translateY(-50%);
+  }
+}
+
+@media screen and (max-width:767px) {
+  .panel.form {
+    .panel-body {
+      padding: 30px 40px 20px;
+    }
+
+    .panel-footer {
+      padding: 20px;
+    }
+  }
+}
+
+@media screen and (min-width:768px) {
+  .panel.form {
+    .panel-body {
+      padding: 50px 70px 40px;
+    }
+
+    .panel-footer {
+      padding: 30px;
     }
   }
 }

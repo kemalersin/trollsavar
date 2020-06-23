@@ -8,6 +8,8 @@ import config from './config/environment';
 export default function (app) {
     var env = process.env.NODE_ENV;
 
+    app.use('/api/captcha', require('./api/captcha'));    
+
     app.use('/api/logs', require('./api/log'));
     app.use('/api/stats', require('./api/stat'));
     app.use('/api/blocks', require('./api/block'));

@@ -17,8 +17,14 @@ import { NgxDialogsModule } from "ngx-dialogs";
 
 import { AppComponent } from './app.component';
 import { MainModule } from './main/main.module';
+import { LoginModule } from "./login/login.module";
+import { RegisterModule } from "./register/register.module";
+import { PasswordResetModule } from "./password/password.reset/password.reset.module";
+
 import { DirectivesModule } from '../components/directives.module';
+
 import { JwtModule } from '@auth0/angular-jwt';
+
 import { MembersModule } from './members/members.module';
 import { UsersModule } from './users/users.module';
 import { BlockModule } from './block/block.module';
@@ -47,6 +53,9 @@ const appRoutes: Routes = [{
 
         RouterModule.forRoot(appRoutes, { enableTracing: process.env.NODE_ENV === 'development' }),
         MainModule,
+        LoginModule,
+        RegisterModule,    
+        PasswordResetModule,            
         DirectivesModule,
         MembersModule,
         UsersModule,

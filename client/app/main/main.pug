@@ -6,9 +6,13 @@ h3.centered(*ngIf='isLoaded')
     | &nbsp; Katıldığınız için teşekkürler!
   p.small.text-center(*ngIf='isUser') Birazdan Twitter adresimize yönlendirileceksiniz...
   p.text-center(*ngIf='!isLoggedIn')
-    a.btn.btn-primary.btn-lg.twitter(href='/auth/twitter')
+    a.btn.btn-primary.login(href='/auth/twitter')
       i.fa.fa-twitter
       | &nbsp; Aramıza Katıl
+    | &nbsp;&nbsp;
+    a.btn.login.outline(routerLink='/giris')
+      i.fa.fa-envelope-o
+      | &nbsp; E-Posta ile Giriş
     br
   br
   p.small.text-center

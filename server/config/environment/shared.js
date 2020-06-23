@@ -6,22 +6,42 @@ export const blockLimitPerApp = process.env.BLOCK_LIMIT_PER_APP || 900000;
 export const blockLimitPerUser = process.env.BLOCK_LIMIT_PER_USER || 900;
 export const redirectUrl = process.env.REDIRECT_URL || 'https://twitter.com/isimsizhareket';
 
-// List of user roles
+export const EMAIL_REGEXP = /^[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}$/;
+
 export const userRoles = ['user', 'member', 'admin'];
 
 export const dataLimit = 20;
 
 export const errors = {
-    userNotFound: "Kullanıcı bulunamadı!"
+    wrongCaptcha: "Doğrulama kodu yanlış.",    
+    userNotFound: "Kullanıcı bulunamadı.",
+    incorrectPassword: "Parola hatalıdır.",
+    incorrectEmail: "Hatalı e-posta adresi.",
+    emailNotSent: "E-posta gönderilemedi.",
+    emailExists: "E-posta adresi kullanılıyor.",    
+    tryAgain: "Lütfen daha sonra tekrar deneyin.",
+    usernameTaken: "Kullanıcı adı alınmış.",    
+    missingUsername: "Kullanıcı adı girilmelidir.",        
+    missingInformation: "Tüm alanlar doldurulmalıdır.",
+    passwordMinimumLength: "Parola en az 3 karakter olmalıdır.",
+    nameMinimumLength: "Tam ad en az 3 karakter olmalıdır.",    
+    usernameMinimumLength: "Kullanıcı adı en az 3 karakter olmalıdır.", 
+}
+
+export const messages = {
+    usernameInform: "Ayarlardan kullanıcı adı belirleyebilirsiniz."
 }
 
 export default {
     env,
     port,
-    errors,    
+    errors,  
+    messages,  
     userRoles,
     dataLimit,
     redirectUrl,
     blockLimitPerApp,
     blockLimitPerUser,
+
+    EMAIL_REGEXP
 };
