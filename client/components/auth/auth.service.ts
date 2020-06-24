@@ -126,11 +126,11 @@ export class AuthService {
             .then(() => {
                 this.currentUser.name = name;
                 this.currentUser.username = username;
-                
+
                 safeCb(callback)(null);
             })
             .catch((err) => safeCb(callback)(err));
-    }    
+    }
 
     changePassword(oldPassword, newPassword, callback) {
         return this.UserService.changePassword(
@@ -179,11 +179,11 @@ export class AuthService {
         return !!this.currentUser._id;
     }
 
-    isTwitterUser(callback?) {
+    isTwitterUser(callback?, allRoles?) {
         return this.getCurrentUser().then((user) => {
             var is =
                 user.role &&
-                user.role === "user" &&
+                (allRoles || user.role === "user") &&
                 user.provider === "twitter";
             safeCb(callback)(is);
             return is;

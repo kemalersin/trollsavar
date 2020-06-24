@@ -2,21 +2,23 @@ import fs from "fs";
 import async from "async";
 import Twitter from "twitter";
 
+import { transform } from "lodash";
+
 import differenceInMinutes from "date-fns/differenceInMinutes";
 
 import Block from "./block.model";
+import List from "./list.model";
 import Log from "../log/log.model";
 import Stat from "../stat/stat.model";
 import Flag from "./flag.model";
 import User from "../user/user.model";
 import config from "../../config/environment";
 
-function handleError(res, statusCode) {
-    statusCode = statusCode || 500;
-    return function (err) {
-        return res.status(statusCode).send(err);
-    };
-}
+import {
+    handleError,
+    handleEntityNotFound,
+    respondWithResult
+} from '../../helpers';
 
 function getTwitter(user) {
     return new Twitter({
@@ -74,10 +76,8 @@ export function count(req, res, next) {
         isDeleted: { $ne: true }
     })
         .exec()
-        .then((count) => {
-            res.json(count);
-        })
-        .catch((err) => next(err));
+        .then(respondWithResult(res))
+        .catch(handleError(res));
 }
 
 export function resetTask(req, res) {
@@ -100,7 +100,8 @@ export function resetTask(req, res) {
             }
 
             return res.status(304).end();
-        });
+        })
+        .catch(handleError);
 }
 
 export function index(req, res) {
@@ -113,8 +114,74 @@ export function index(req, res) {
         .skip(--index * config.dataLimit)
         .limit(config.dataLimit)
         .exec()
-        .then((blocks) => {
-            res.status(200).json(blocks);
+        .then(respondWithResult(res))
+        .catch(handleError(res));
+}
+
+export function random(req, res, next) {
+    List.aggregate([
+        {
+            $match: {
+                user: req.user._id,
+                type: { $in: [1, 2] }
+            }
+        },
+        { $group: { "_id": "$user", blocks: { $push: "$block" } } }
+    ]).exec()
+        .then((list) => {
+            var blocks = list.length ? list[0].blocks : [];
+
+            Block.findRandom(
+                {
+                    _id: { $nin: blocks },
+                    isDeleted: { $ne: true },
+                    isNotFound: { $ne: true },
+                    isSuspended: { $ne: true },
+                    "profile.description": { $ne: "" },
+                    "profile.status": { $exists: true }
+                },
+                {},
+                { limit: config.randomCount }, (err, blocks) => {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    res.json(
+                        transform(
+                            blocks,
+                            (result, block) => result.push(block.profile),
+                            []
+                        )
+                    );
+                });
+        })
+}
+
+export function hide(req, res) {
+    Block.findOne({
+        "profile.id_str": req.params.id
+    })
+        .exec()
+        .then(handleEntityNotFound(res))
+        .then((block) => {
+            if (block) {
+                let list = new List();
+
+                list.user = req.user._id;
+                list.block = block._id;
+
+                if (req.body.blocked) {
+                    list.type = 2;
+                }
+
+                return list.save()
+                    .then(() => {
+                        res.json(block.profile);
+                    })
+                    .catch(handleError(res));
+            }
+
+            return null;
         })
         .catch(handleError(res));
 }
@@ -177,14 +244,9 @@ export function show(req, res, next) {
         .skip(--index * config.dataLimit)
         .limit(config.dataLimit)
         .exec()
-        .then((block) => {
-            if (!block) {
-                return res.status(404).end();
-            }
-
-            res.json(block);
-        })
-        .catch((err) => next(err));
+        .then(handleEntityNotFound(res))
+        .then(respondWithResult(res))
+        .catch(handleError(res));
 }
 
 export function destroy(req, res) {
@@ -309,7 +371,7 @@ export async function block(req, res) {
                                 }
 
                                 twitter
-                                    .post("blocks/create", { user_id: block.profile.id })
+                                    .post("blocks/create", { user_id: block.profile.id_str })
                                     .then((blocked) => {
                                         if (!blocked["screen_name"]) {
                                             failed++;
@@ -329,6 +391,14 @@ export async function block(req, res) {
                                         user.lastBlockId = block.id;
 
                                         user.save().then(() => {
+                                            let list = new List();
+
+                                            list.user = user.id;
+                                            list.block = block.id;
+                                            list.type = 3;
+
+                                            list.save();
+
                                             if (
                                                 (++userBlockCounter === blocks.length) ||
                                                 (++innerLimit === config.blockLimitPerUser) ||

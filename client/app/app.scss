@@ -6,6 +6,18 @@ $fa-font-path: '/assets/fonts/font-awesome/';
 
 body {
   overflow-y: scroll;
+
+  &.hidden-footer {
+    .container.root {
+      margin-bottom: 10px;
+    }
+  }
+
+  &:not(.hidden-footer) {
+    .container.root {
+      margin-bottom: 70px;
+    }
+  }
 }
 
 .centered,
@@ -44,6 +56,7 @@ a.navbar-brand {
 }
 
 a[target='_blank'] {
+
   &:visited,
   &:link,
   &:active {
@@ -75,6 +88,7 @@ a[target='_blank'] {
 }
 
 .validated {
+
   .ng-valid[required],
   .ng-valid.required {
     border-left: 5px solid #42A948;
@@ -113,8 +127,14 @@ a[target='_blank'] {
   }
 }
 
-.tooltip {
-  font-size: 14px;
+a.generated {
+  display: contents;
+}
+
+.alert {
+  ul {
+    padding-left: 25px;
+  }
 }
 
 .ngx-dialog.custom-alert {

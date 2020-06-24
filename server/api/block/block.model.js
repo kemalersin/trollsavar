@@ -1,5 +1,6 @@
 /*eslint no-invalid-this:0*/
 import mongoose, { Schema } from 'mongoose';
+import random from 'mongoose-simple-random';
 
 mongoose.Promise = require('bluebird');
 
@@ -19,5 +20,7 @@ var BlockSchema = new Schema({
     },
     profile: {}
 }, { timestamps: true });
+
+BlockSchema.plugin(random);
 
 export default mongoose.model('Block', BlockSchema);

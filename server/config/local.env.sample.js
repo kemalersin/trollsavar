@@ -29,5 +29,7 @@ module.exports = {
     BLOCK_LIMIT_PER_APP: 900000,
     BLOCK_LIMIT_PER_USER: 900,
 
+    RANDOM_COUNT: 10,
+
     REDIRECT_URL: 'https://twitter.com/isimsizhareket'
 };
