@@ -101,7 +101,7 @@ export function resetTask(req, res) {
 
             return res.status(304).end();
         })
-        .catch(handleError);
+        .catch(handleError(res));
 }
 
 export function index(req, res) {
