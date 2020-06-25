@@ -31,9 +31,9 @@
                     span(*ngIf='loading') Kayıtlar listeleniyor...
                     span(*ngIf='!loading && count<=0') Kayıt bulunamadı!
                     span(*ngIf='!loading && count>0')
-                        span(*ngIf='!username') Bugün
+                        span(*ngIf='!username') Troll hesaplar bugün
                         = ' '
-                        | {{ count | number }} hesap
+                        | {{ count | number }} kez
                         = ' '
                         span(*ngIf='selectedTab=="engellenenler"') engellenmiş.
                         span(*ngIf='selectedTab=="gizlenenler"') gizlenmiş.
