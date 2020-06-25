@@ -7,10 +7,10 @@ import { transform } from "lodash";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 
 import Block from "./block.model";
-import List from "./list.model";
+import Flag from "./flag.model";
+import List from "../list/list.model";
 import Log from "../log/log.model";
 import Stat from "../stat/stat.model";
-import Flag from "./flag.model";
 import User from "../user/user.model";
 import config from "../../config/environment";
 
@@ -76,6 +76,7 @@ export function count(req, res, next) {
         isDeleted: { $ne: true }
     })
         .exec()
+        .then(handleEntityNotFound(res))
         .then(respondWithResult(res))
         .catch(handleError(res));
 }
@@ -109,11 +110,12 @@ export function index(req, res) {
 
     return Block.find({
         isDeleted: { $ne: true }
-    }, "-salt -password")
+    })
         .sort({ _id: -1 })
         .skip(--index * config.dataLimit)
         .limit(config.dataLimit)
         .exec()
+        .then(handleEntityNotFound(res))
         .then(respondWithResult(res))
         .catch(handleError(res));
 }

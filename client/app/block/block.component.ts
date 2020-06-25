@@ -1,12 +1,9 @@
 import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
-import { Location } from "@angular/common";
 import { finalize } from "rxjs/operators";
 import { Router, ActivatedRoute } from "@angular/router";
 
 import { Ngxalert } from "ngx-dialogs";
 import { ToastrService } from "ngx-toastr";
-
-import { errors } from "../app.constants";
 
 import { BlockService } from "./block.service";
 
@@ -30,7 +27,6 @@ export class BlockComponent implements OnInit {
     @ViewChild("fileInput") fileInput: ElementRef;
 
     static parameters = [
-        Location,
         ActivatedRoute,
         Router,
         ToastrService,
@@ -38,7 +34,6 @@ export class BlockComponent implements OnInit {
     ];
 
     constructor(
-        private location: Location,
         private route: ActivatedRoute,
         private router: Router,
         private toastr: ToastrService,
@@ -46,7 +41,6 @@ export class BlockComponent implements OnInit {
     ) {
         this.route = route;
         this.router = router;
-        this.location = location;
         this.blockService = blockService;
     }
 

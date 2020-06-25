@@ -1,9 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Location } from "@angular/common";
-import { finalize } from "rxjs/operators";
 import { ActivatedRoute } from "@angular/router";
-
-import { find, filter, sortBy } from "lodash";
 
 import { Ngxalert } from "ngx-dialogs";
 import { ToastrService } from "ngx-toastr";
@@ -20,8 +17,7 @@ import { UserService } from "../../components/auth/user.service";
 
 @Component({
     selector: "settings",
-    template: require("./settings.pug"),
-    styles: [require("./settings.scss")],
+    template: require("./settings.pug")
 })
 export class SettingsComponent implements OnInit {
     members: Object[];

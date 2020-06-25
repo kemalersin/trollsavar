@@ -13,6 +13,7 @@ export default function (app) {
     app.use('/api/logs', require('./api/log'));
     app.use('/api/stats', require('./api/stat'));
     app.use('/api/blocks', require('./api/block'));
+    app.use('/api/lists', require('./api/list'));    
     app.use('/api/users', require('./api/user'));
     app.use('/api/members', require('./api/member'));
     app.use('/auth', require('./auth').default);
