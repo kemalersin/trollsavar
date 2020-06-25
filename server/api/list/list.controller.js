@@ -22,8 +22,6 @@ export function count(req, res, next) {
     const startOfToday = getToday();
     const listType = (req.params.listType == "gizlenenler") ? 1 : { $in: [2, 3] };
 
-    console.log(listType);
-
     return List.count({
         user: req.user.id,
         type: listType,
@@ -91,9 +89,10 @@ export function destroy(req, res) {
     return List.findOne({
         _id: req.params.id,
         user: req.user.id,
+        type: { $ne: 3 }
     })
         .exec()
-        .then(handleEntityNotFound(res))        
+        .then(handleEntityNotFound(res))
         .then(removeEntity(res))
         .catch(handleError(res));
 }

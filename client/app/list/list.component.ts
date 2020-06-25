@@ -68,6 +68,8 @@ export class ListComponent implements OnInit {
                     this.loading = false;
                     this.count = list.length;
                 } else {
+                    this.count = -1;
+
                     this.listService
                         .count(this.selectedTab)
                         .pipe(finalize(() => (this.loading = false)))
