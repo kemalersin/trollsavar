@@ -66,21 +66,13 @@ UserSchema
         };
     });
 
-    UserSchema
-    .path('email')
-    .validate(function (email) {
-        return email.length;
-    }, 'E-posta boş olamaz.');
-
-UserSchema
-    .path('password')
-    .validate(function (password) {
-        return password.length;
-    }, 'Parola boş olamaz.');
-
 UserSchema
     .path('email')
     .validate(function (value) {
+        if (!value) {
+            return true;
+        }
+
         return this.constructor.findOne({ email: value }).exec()
             .then(user => {
                 if (user) {
