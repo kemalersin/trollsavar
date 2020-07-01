@@ -223,6 +223,7 @@ export function create(req, res) {
                     let newBlock = new Block({
                         username: profile.screen_name,
                         profile: profile,
+                        addedBy: req.user ? req.user._id : null
                     });
 
                     return newBlock
@@ -256,6 +257,8 @@ export function destroy(req, res) {
         .exec()
         .then(function (block) {
             block.isDeleted = true;
+            block.deletedBy = req.user ? req.user._id : null;
+
             block.save();
 
             res.status(204).end();

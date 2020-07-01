@@ -18,6 +18,14 @@ var BlockSchema = new Schema({
         type: Boolean,
         default: false
     },
+    addedBy: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    },    
+    deletedBy: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    },      
     profile: {}
 }, { timestamps: true });
 

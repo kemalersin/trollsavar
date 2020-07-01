@@ -38,7 +38,15 @@ var UserSchema = new Schema({
     tokenExpired: {
         type: Boolean,
         default: false
-    }, 
+    },
+    bannedBy: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    },     
+    deletedBy: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    },     
     profile: {},
     accessToken: String,
     accessTokenSecret: String,
