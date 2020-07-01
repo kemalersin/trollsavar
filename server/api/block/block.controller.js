@@ -332,8 +332,10 @@ export async function block(req, res) {
             }
 
             User.find({
-                isLocked: { $ne: true },
-                isSuspended: { $ne: true },
+                isDeleted: { $ne: true },
+                isBanned: { $ne: true },                
+                //isLocked: { $ne: true },
+                //isSuspended: { $ne: true },
                 $or: [
                     { lastBlockId: null },
                     { lastBlockId: { $lt: block.id } },
@@ -355,6 +357,10 @@ export async function block(req, res) {
 
                     async.eachSeries(users, (user, cbOuter) => {
                         let twitter = getTwitter(user);
+
+                        user.isLocked = false;                                        
+                        user.isSuspended = false;
+                        user.tokenExpired = false;   
 
                         Block.find(user.lastBlockId ? {
                             _id: { $gt: user.lastBlockId }
@@ -388,7 +394,7 @@ export async function block(req, res) {
                                         block.profile = blocked;
                                         block.isSuspended = false;
 
-                                        block.save();
+                                        block.save();                                     
 
                                         user.lastBlockId = block.id;
 
@@ -428,12 +434,13 @@ export async function block(req, res) {
                                                 });
 
                                                 if (
+                                                    errCode == 34 ||
                                                     errCode == 50 ||
                                                     errCode == 63
                                                 ) {
-                                                    (errCode == 50) ?
-                                                        block.isNotFound = true :
-                                                        block.isSuspended = true;
+                                                    (errCode == 63) ?
+                                                        block.isSuspended = true :
+                                                        block.isNotFound = true;
 
                                                     block.save();
                                                     failedBlocks.push(block.username);
@@ -445,11 +452,11 @@ export async function block(req, res) {
                                                         errCode == 89 ||
                                                         errCode == 326
                                                     ) {
-                                                        if (errCode == 64) {
+                                                        if (errCode == 32 || errCode == 64) {
                                                             user.isSuspended = true;
                                                         }
                                                         else {
-                                                            (errCode == 32 || errCode == 89) ?
+                                                            (errCode == 89) ?
                                                                 user.tokenExpired = true :
                                                                 user.isLocked = true;
                                                         }
