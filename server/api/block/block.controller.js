@@ -413,13 +413,15 @@ export async function block(req, res) {
                                         user.lastBlockId = block.id;
 
                                         user.save().then(() => {
-                                            let list = new List();
+                                            if (!block.isUnblocked) {
+                                              let list = new List();
 
-                                            list.user = user.id;
-                                            list.block = block.id;
-                                            list.type = block.isUnblocked ? 4 : 3;
+                                              list.user = user.id;
+                                              list.block = block.id;
+                                              list.type = 3;
 
-                                            list.save();
+                                              list.save();
+                                            }
 
                                             if (
                                                 (++userBlockCounter === blocks.length) ||
