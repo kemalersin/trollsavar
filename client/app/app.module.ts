@@ -31,6 +31,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { MembersModule } from './members/members.module';
 import { UsersModule } from './users/users.module';
 import { BlockModule } from './block/block.module';
+import { UnblockModule } from './unblock/unblock.module';
 import { LogsModule } from './logs/logs.module';
 
 export function tokenGetter() {
@@ -64,6 +65,7 @@ const appRoutes: Routes = [{
         MembersModule,
         UsersModule,
         BlockModule,
+        UnblockModule,
         LogsModule,
         RandomModule,
         ListModule,

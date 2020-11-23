@@ -27,6 +27,10 @@ var UserSchema = new Schema({
         type: Boolean,
         default: false
     },
+    isUnblocked: {
+        type: Boolean,
+        default: false
+    },     
     isLocked: {
         type: Boolean,
         default: false

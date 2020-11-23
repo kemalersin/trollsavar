@@ -26,12 +26,7 @@ export class BlockComponent implements OnInit {
 
     @ViewChild("fileInput") fileInput: ElementRef;
 
-    static parameters = [
-        ActivatedRoute,
-        Router,
-        ToastrService,
-        BlockService,
-    ];
+    static parameters = [ActivatedRoute, Router, ToastrService, BlockService];
 
     constructor(
         private route: ActivatedRoute,
@@ -53,9 +48,10 @@ export class BlockComponent implements OnInit {
 
                 this.username
                     ? (this.count = blocks.length)
-                    : this.blockService
-                          .count()
-                          .subscribe((count) => (this.count = count));
+                    : this.blockService.count().subscribe(
+                          (count) => (this.count = count),
+                          (error) => (this.count = 0)
+                      );
             });
         });
     }

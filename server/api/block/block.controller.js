@@ -53,6 +53,7 @@ function createMultiple(req, res, usernames) {
                         let newBlock = new Block({
                             username: profile.screen_name,
                             profile: profile,
+                            isUnblocked: false
                         });
 
                         newBlock
@@ -73,6 +74,7 @@ function createMultiple(req, res, usernames) {
 
 export function count(req, res, next) {
     return Block.count({
+        isUnblocked: { $ne: true },
         isDeleted: { $ne: true }
     })
         .exec()
@@ -109,7 +111,8 @@ export function index(req, res) {
     var index = +req.query.index || 1;
 
     return Block.find({
-        isDeleted: { $ne: true }
+        isDeleted: { $ne: true },
+        isUnblocked: { $ne: true }
     })
         .sort({ _id: -1 })
         .skip(--index * config.dataLimit)
@@ -137,6 +140,7 @@ export function random(req, res, next) {
                 {
                     _id: { $nin: blocks },
                     isDeleted: { $ne: true },
+                    isUnblocked: { $ne: true },
                     isNotFound: { $ne: true },
                     isSuspended: { $ne: true },
                     "profile.description": { $ne: "" },
@@ -223,6 +227,7 @@ export function create(req, res) {
                     let newBlock = new Block({
                         username: profile.screen_name,
                         profile: profile,
+                        isUnblocked: false,
                         addedBy: req.user ? req.user._id : null
                     });
 
@@ -243,7 +248,7 @@ export function show(req, res, next) {
     const username = req.params.username;
     var index = +req.query.index || 1;
 
-    return Block.find({ username: { $regex: new RegExp(username, "i") } })
+    return Block.find({ username: { $regex: new RegExp(username, "i") }, isUnblocked: { $ne: true } })
         .skip(--index * config.dataLimit)
         .limit(config.dataLimit)
         .exec()
@@ -297,6 +302,7 @@ export function upload(req, res) {
                         let newBlock = new Block({
                             username: profile.screen_name,
                             profile: profile,
+                            isUnblocked: false
                         });
 
                         newBlock.save()
@@ -336,7 +342,7 @@ export async function block(req, res) {
 
             User.find({
                 isDeleted: { $ne: true },
-                isBanned: { $ne: true },                
+                isBanned: { $ne: true },
                 //isLocked: { $ne: true },
                 //isSuspended: { $ne: true },
                 $or: [
@@ -361,9 +367,9 @@ export async function block(req, res) {
                     async.eachSeries(users, (user, cbOuter) => {
                         let twitter = getTwitter(user);
 
-                        user.isLocked = false;                                        
+                        user.isLocked = false;
                         user.isSuspended = false;
-                        user.tokenExpired = false;   
+                        user.tokenExpired = false;
 
                         Block.find(user.lastBlockId ? {
                             _id: { $gt: user.lastBlockId }
@@ -382,7 +388,12 @@ export async function block(req, res) {
                                 }
 
                                 twitter
-                                    .post("blocks/create", { user_id: block.profile.id_str })
+                                    .post(
+                                        block.isUnblocked ?
+                                            "blocks/destroy" :
+                                            "blocks/create",
+                                        { user_id: block.profile.id_str }
+                                    )
                                     .then((blocked) => {
                                         if (!blocked["screen_name"]) {
                                             failed++;
@@ -397,7 +408,7 @@ export async function block(req, res) {
                                         block.profile = blocked;
                                         block.isSuspended = false;
 
-                                        block.save();                                     
+                                        block.save();
 
                                         user.lastBlockId = block.id;
 
@@ -406,7 +417,7 @@ export async function block(req, res) {
 
                                             list.user = user.id;
                                             list.block = block.id;
-                                            list.type = 3;
+                                            list.type = block.isUnblocked ? 4 : 3;
 
                                             list.save();
 

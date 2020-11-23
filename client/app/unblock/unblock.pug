@@ -1,0 +1,38 @@
+.container.root
+  .row
+    .col-md-12
+      .form((keyup.enter)='addUnblock()')
+        .input-group
+          input.form-control(type='text',
+            [(ngModel)]='newUnblock',
+            name='unblock',
+            placeholder='Engeli kaldırılacak Twitter kullanıcısının adını yazınız'
+          )
+          .input-group-btn
+            button.btn.btn-default(type='submit', (click)='addUnblock()') Ekle
+      br
+  .row
+    .col-md-12
+      p.count.text-center(*ngIf='uploading')
+        | Kayıtlar aktarılıyor...
+      p.count.text-center(*ngIf='!uploading')
+        span(*ngIf='count===-1') Kayıtlar listeleniyor...
+        span(*ngIf='count===0') Kayıt bulunamadı!
+        span(*ngIf='count>0') Toplam {{ count | number }} engeli kaldırılmış hesap bulundu.
+      br
+  .row(infiniteScroll,
+      [infiniteScrollDistance]='0.1',
+      [infiniteScrollThrottle]='50',
+      (scrolled)='onScroll()'
+    )
+    .col-md-3(*ngFor='let unblock of unblocks')
+      .panel.panel-default
+        .panel-body
+          p.text-center
+            img.profile-image.img-circle([src]='unblock.profile.profile_image_url_https', width='48', height='48')
+          h4.text-center
+            a([attr.href]='"https://www.twitter.com/" + unblock.username', target='_blank') {{unblock.username}}
+          p.text-center
+            span(*ngIf='unblock.isDeleted') Silinmiş
+            a.trash(*ngIf='!unblock.isDeleted', (click)='delete(unblock)')
+              span.fa.fa-trash.fa-2x

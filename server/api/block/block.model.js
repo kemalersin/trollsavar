@@ -10,6 +10,10 @@ var BlockSchema = new Schema({
         type: Boolean,
         default: false
     },
+    isUnblocked: {
+        type: Boolean,
+        default: false
+    },    
     isNotFound: {
         type: Boolean,
         default: false
