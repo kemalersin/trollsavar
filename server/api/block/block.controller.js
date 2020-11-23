@@ -402,7 +402,9 @@ export async function block(req, res) {
                                             return cbInner();
                                         }
 
-                                        success++;
+                                        if (!block.isUnblocked) {
+                                          success++;
+                                        }
 
                                         block.username = blocked.screen_name
                                         block.profile = blocked;

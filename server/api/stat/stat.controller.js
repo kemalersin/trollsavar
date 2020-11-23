@@ -36,9 +36,10 @@ export async function all(req, res, next) {
         { $limit: 1 }
     ];
 
-    const perUserTotal = await Block.count();
+    const perUserTotal = await Block.count({ "isUnblocked": { $ne: true } });
 
     const perUserToday = await Block.count({
+        "isUnblocked": { $ne: true },
         "createdAt": {
             $gte: startOfDay(startOfToday),
             $lte: endOfDay(startOfToday)
